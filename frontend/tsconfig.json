@@ -21,7 +21,7 @@
     "paths": {
       "@/*": ["./*"],
       "@shared/*": ["../shared/*"],
-      "@backend/*": ["../backend/*"]
+      "@backend/*": ["../backend/*", "../BACKEND/*"]
     }
   },
   "include": [
@@ -29,7 +29,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "../shared/**/*.ts"
+    "../shared/**/*.ts",
+    "../BACKEND/**/*.ts"
   ],
   "exclude": ["node_modules"]
 }
