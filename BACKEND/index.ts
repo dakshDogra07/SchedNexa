@@ -30,16 +30,23 @@ async function ping(
   }
 }
 
+import { getLeaveImpact, markLeave } from './services/leave.js';
+import {
+  generateTimetable,
+  getEffectiveSchedule,
+  getTimetable,
+} from './services/timetable.js';
+
 // ─── Handlers registry ──────────────────────────────────────────────
 export const handlers: Handlers = {
   ping,
   getDemoUsers: () => notImplemented(),
   resetDemo: () => notImplemented(),
-  generateTimetable: () => notImplemented(),
-  getTimetable: () => notImplemented(),
-  getEffectiveSchedule: () => notImplemented(),
-  getLeaveImpact: () => notImplemented(),
-  markLeave: () => notImplemented(),
+  generateTimetable,
+  getTimetable,
+  getEffectiveSchedule,
+  getLeaveImpact,
+  markLeave,
   getOpenSlots: () => notImplemented(),
   checkConflicts: () => notImplemented(),
   bookSlot: () => notImplemented(),

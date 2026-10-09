@@ -1,42 +1,43 @@
-# B-03 Plan
+# B-05 Plan
 
 ## Task
-B-03 | P0 | engine/availability.ts + engine/conflicts.ts (5 checks, span aware) + script test | needs: B-01
+B-05 | P0 | services/timetable: generateTimetable, getTimetable, getEffectiveSchedule | needs: B-02, B-04
 
 ## Goal
-Create pure engine functions for schedule availability checks and the 5 conflict checks used by checkConflicts/bookSlot. No DB calls — services will pre-fetch data and pass it in.
+Implement timetable service functions in `services/timetable.ts` with Zod validation in `schemas.ts` and date calculation helpers in `lib/dates.ts`. Wire functions into `index.ts` `handlers` registry.
 
 ## Sub-steps
-1. [x] Create `engine/availability.ts` — ScheduleContext type, isBusyAt, isBusyForSpan
-2. [x] Create `engine/conflicts.ts` — ConflictCheckInput type, runConflictChecks (5 checks, span-aware)
-3. [x] Create `scripts/conflicts-test.ts` — pure logic tests (no DB needed)
-4. [x] Run `tsc --noEmit` — 0 errors
-5. [x] Run test script — all tests pass
+1. [x] Create `lib/dates.ts` — UTC date helpers (`getUTCDayOfWeek`, `isWeekend`)
+2. [x] Update `schemas.ts` — Zod schemas for `GenerateTimetableInput`, `GetTimetableInput`, `GetEffectiveScheduleInput`
+3. [x] Create `services/timetable.ts`:
+   - `generateTimetable`: fetches base data, runs greedy generator, clears old timetable, inserts new rows, returns `GenerationResult`.
+   - `getTimetable`: returns weekly template rows joined with related tables, filtered by `classId`, `facultyId`, or `roomId`.
+   - `getEffectiveSchedule`: overlay schedule for a date with open slots, extra lectures, and lab bookings.
+4. [x] Wire `services/timetable.ts` into `index.ts` `handlers` registry
+5. [x] Create `scripts/timetable-test.ts` — verification script for input validation, date calculation, and DB queries
+6. [x] Add `"timetable-test"` script to `package.json`
+7. [x] Run `npm run typecheck` — 0 errors
+8. [x] Run `npm run timetable-test` — all tests pass cleanly
 
-## The 5 checks (from API_CONTRACT.md + PROJECT.md)
-1. **faculty_free** — Faculty is not busy at (date, slotNos). Each slot checked.
-2. **subject_eligible** — subjectId is in faculty_subjects.
-3. **class_free** — Class is not busy at (date, slotNos). Each slot checked.
-4. **room_reserved** — Room (from open slot) is not double-booked. Each slot checked.
-5. **workload_ok** — currentTotalHours + span <= maxHours.
+## Rules & Constraints (from API_CONTRACT.md + ARCHITECTURE.md)
+- Every function takes ONE object argument and returns `ApiResult<T>`.
+- Input validated with Zod first.
+- Dates are `YYYY-MM-DD` strings. Weekday in UTC: 1=Mon .. 5=Fri. Saturdays/Sundays return weekend error.
+- `getTimetable` accepts at most ONE filter (`classId`, `facultyId`, or `roomId`).
+- `getEffectiveSchedule` accepts at most ONE filter (`facultyId` or `classId`).
 
-## Availability logic (from PROJECT.md)
-An entity is BUSY at (date, slot) if:
-- Has a timetable row at weekday(date)+slot with NO open_slot for that date; OR
-- Has a confirmed extra_lecture there; OR
-- Has an approved lab_booking there.
+## Files created/modified
+- `BACKEND/lib/dates.ts`
+- `BACKEND/schemas.ts`
+- `BACKEND/services/timetable.ts`
+- `BACKEND/index.ts`
+- `BACKEND/scripts/timetable-test.ts`
+- `BACKEND/package.json`
 
-## Files to create
-- `backend/engine/availability.ts`
-- `backend/engine/conflicts.ts`
-- `backend/scripts/conflicts-test.ts`
-
-## Names (from docs)
-- Types: Check, CheckResult from shared/types.ts
-- Keys: faculty_free, subject_eligible, class_free, room_reserved, workload_ok
-- Functions: isBusyAt, isBusyForSpan, runConflictChecks
-
-## Verification
-- tsc passes with 0 errors
-- Test script exercises: all pass, faculty busy, subject ineligible, class busy, workload exceeded, span-aware (lab block)
-- All pure logic — no DB or env vars needed — FULL verification possible
+## Verification Results
+- `npm run typecheck` (`tsc --noEmit`) returned 0 errors.
+- `npm run timetable-test` (`tsx scripts/timetable-test.ts`) returned exit code 0:
+  - Date calculation helpers verified
+  - Multi-filter validation errors verified
+  - Weekend date validation error verified
+  - Database queries and RPC handlers executed cleanly against Supabase

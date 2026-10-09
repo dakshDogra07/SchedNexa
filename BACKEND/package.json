@@ -5,7 +5,10 @@
   "type": "module",
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "ping-test": "tsx scripts/ping-test.ts"
+    "ping-test": "tsx scripts/ping-test.ts",
+    "conflicts-test": "tsx scripts/conflicts-test.ts",
+    "generator-test": "tsx scripts/generator-test.ts",
+    "timetable-test": "tsx scripts/timetable-test.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.0",
