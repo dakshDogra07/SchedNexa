@@ -262,7 +262,7 @@ All modifications are strictly confined inside the `frontend/` directory.
 
 ## Group 3: Nice-To-Have (P2 — Analytics & Visualization)
 
-### [ ] Task 3.1: Executive Analytics & Heatmaps (F-17)
+### [x] Task 3.1: Executive Analytics & Heatmaps (F-17)
 - **What to do**:
   - Implement `frontend/app/admin/analytics/page.tsx` calling `getAnalytics`.
   - Recharts visualizations: peak-hour room utilization heatmap, open academic slots filled vs. wasted ratio, and cumulative academic hours saved chart.

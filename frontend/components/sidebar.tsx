@@ -10,6 +10,7 @@ import {
   Sparkles,
   FileSpreadsheet,
   Settings,
+  LineChart,
   CalendarPlus,
   FlaskConical,
   Bell,
@@ -30,6 +31,7 @@ const ADMIN_NAV_ITEMS: NavItem[] = [
   { label: 'Workload', href: '/admin/workload', icon: BarChart3 },
   { label: 'Rooms & Labs', href: '/admin/rooms', icon: DoorOpen },
   { label: 'Open Slots', href: '/admin/open-slots', icon: Sparkles },
+  { label: 'Analytics', href: '/admin/analytics', icon: LineChart },
   { label: 'Setup', href: '/admin/setup', icon: Settings },
   { label: 'Reports', href: '/admin/reports', icon: FileSpreadsheet },
 ];

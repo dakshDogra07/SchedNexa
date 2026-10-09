@@ -811,6 +811,51 @@ export const mockHandlers: {
   },
 
   getAnalytics: async () => {
-    return { ok: true, data: {} };
+    return {
+      ok: true,
+      data: {
+        peakHoursHeatmap: [
+          { day: 'Mon', s1: 65, s2: 90, s3: 100, s4: 85, s5: 95, s6: 70, s7: 35 },
+          { day: 'Tue', s1: 75, s2: 95, s3: 100, s4: 90, s5: 85, s6: 80, s7: 40 },
+          { day: 'Wed', s1: 80, s2: 100, s3: 95, s4: 80, s5: 90, s6: 75, s7: 30 },
+          { day: 'Thu', s1: 70, s2: 85, s3: 100, s4: 95, s5: 100, s6: 85, s7: 45 },
+          { day: 'Fri', s1: 60, s2: 80, s3: 90, s4: 75, s5: 80, s6: 60, s7: 25 },
+        ],
+        hoursSavedTimeline: [
+          { date: 'Oct 04', daily: 2, cumulative: 2 },
+          { date: 'Oct 05', daily: 4, cumulative: 6 },
+          { date: 'Oct 06', daily: 5, cumulative: 11 },
+          { date: 'Oct 07', daily: 3, cumulative: 14 },
+          { date: 'Oct 08', daily: 6, cumulative: 20 },
+          { date: 'Oct 09', daily: 4, cumulative: 24 },
+          { date: 'Oct 10', daily: 5, cumulative: 29 },
+        ],
+        openSlotsRatio: [
+          { name: 'Claimed & Rescued', value: 24, fill: '#4F46E5' },
+          { name: 'Active / Available', value: 4, fill: '#F59E0B' },
+          { name: 'Unclaimed / Passed', value: 2, fill: '#EF4444' },
+        ],
+        weeklyTrends: [
+          { week: 'W1 (Sep 15)', created: 8, rescued: 7, lost: 1 },
+          { week: 'W2 (Sep 22)', created: 10, rescued: 9, lost: 1 },
+          { week: 'W3 (Sep 29)', created: 6, rescued: 6, lost: 0 },
+          { week: 'W4 (Oct 06)', created: 9, rescued: 8, lost: 1 },
+        ],
+        facultyRescues: [
+          { name: 'Prof. Kaur', department: 'Computer Science', hours: 8, efficiency: 96 },
+          { name: 'Dr. Sharma', department: 'Computer Science', hours: 7, efficiency: 94 },
+          { name: 'Dr. Mehta', department: 'Computer Science', hours: 5, efficiency: 90 },
+          { name: 'Dr. Verma', department: 'Information Tech', hours: 4, efficiency: 88 },
+          { name: 'Dr. Iyer', department: 'Computer Science', hours: 3, efficiency: 85 },
+        ],
+        roomEfficiency: [
+          { name: 'LH-101', type: 'Classroom', capacity: 70, utilization: 92 },
+          { name: 'LH-102', type: 'Classroom', capacity: 60, utilization: 88 },
+          { name: 'CS-Lab-1', type: 'Lab', capacity: 35, utilization: 84 },
+          { name: 'CS-Lab-2', type: 'Lab', capacity: 35, utilization: 78 },
+          { name: 'IT-Lab-1', type: 'Lab', capacity: 30, utilization: 72 },
+        ],
+      },
+    };
   },
 };
