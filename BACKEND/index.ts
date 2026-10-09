@@ -32,6 +32,11 @@ async function ping(
 
 import { getLeaveImpact, markLeave } from './services/leave.js';
 import {
+  getNotifications,
+  markNotificationRead,
+} from './services/notifications.js';
+import { bookSlot, checkConflicts, getOpenSlots } from './services/slots.js';
+import {
   generateTimetable,
   getEffectiveSchedule,
   getTimetable,
@@ -47,11 +52,12 @@ export const handlers: Handlers = {
   getEffectiveSchedule,
   getLeaveImpact,
   markLeave,
-  getOpenSlots: () => notImplemented(),
-  checkConflicts: () => notImplemented(),
-  bookSlot: () => notImplemented(),
-  getNotifications: () => notImplemented(),
-  markNotificationRead: () => notImplemented(),
+  getOpenSlots,
+  checkConflicts,
+  bookSlot,
+  getNotifications,
+  markNotificationRead,
+
   getWorkload: () => notImplemented(),
   getRoomAvailability: () => notImplemented(),
   getRecommendations: () => notImplemented(),

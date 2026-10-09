@@ -220,6 +220,14 @@ export async function markLeave(
       return { ok: false, error: 'dateFrom cannot be after dateTo' };
     }
 
+    // Compute working date list early — reject weekend-only ranges before any DB call
+    const allDates = getDateRange(dateFrom, dateTo);
+    const workingDates = allDates.filter((d) => !isWeekend(d));
+
+    if (workingDates.length === 0) {
+      return { ok: false, error: 'Date range contains only weekend dates' };
+    }
+
     // Verify faculty exists
     const { data: fac, error: facErr } = await db()
       .from('faculty_profiles')
@@ -229,13 +237,6 @@ export async function markLeave(
 
     if (facErr || !fac) {
       return { ok: false, error: 'Faculty profile not found' };
-    }
-
-    const allDates = getDateRange(dateFrom, dateTo);
-    const workingDates = allDates.filter((d) => !isWeekend(d));
-
-    if (workingDates.length === 0) {
-      return { ok: false, error: 'Date range contains only weekend dates' };
     }
 
     // Check for existing leave requests

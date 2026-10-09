@@ -1,43 +1,41 @@
-# B-05 Plan
+# B-08 Plan
 
 ## Task
-B-05 | P0 | services/timetable: generateTimetable, getTimetable, getEffectiveSchedule | needs: B-02, B-04
+B-08 | P0 | services/notifications: getNotifications, markNotificationRead | needs: B-02
 
 ## Goal
-Implement timetable service functions in `services/timetable.ts` with Zod validation in `schemas.ts` and date calculation helpers in `lib/dates.ts`. Wire functions into `index.ts` `handlers` registry.
+Implement notification services in `BACKEND/services/notifications.ts`:
+1. `getNotifications`: Fetch all notifications for a given `userId`, ordered newest first (`created_at` DESC). Validate user existence in `users` table.
+2. `markNotificationRead`: Update `notifications` table set `read = true` for a given `notificationId`.
 
 ## Sub-steps
-1. [x] Create `lib/dates.ts` — UTC date helpers (`getUTCDayOfWeek`, `isWeekend`)
-2. [x] Update `schemas.ts` — Zod schemas for `GenerateTimetableInput`, `GetTimetableInput`, `GetEffectiveScheduleInput`
-3. [x] Create `services/timetable.ts`:
-   - `generateTimetable`: fetches base data, runs greedy generator, clears old timetable, inserts new rows, returns `GenerationResult`.
-   - `getTimetable`: returns weekly template rows joined with related tables, filtered by `classId`, `facultyId`, or `roomId`.
-   - `getEffectiveSchedule`: overlay schedule for a date with open slots, extra lectures, and lab bookings.
-4. [x] Wire `services/timetable.ts` into `index.ts` `handlers` registry
-5. [x] Create `scripts/timetable-test.ts` — verification script for input validation, date calculation, and DB queries
-6. [x] Add `"timetable-test"` script to `package.json`
-7. [x] Run `npm run typecheck` — 0 errors
-8. [x] Run `npm run timetable-test` — all tests pass cleanly
+1. [x] Add Zod schemas `GetNotificationsInput` and `MarkNotificationReadInput` to `BACKEND/schemas.ts`.
+2. [x] Create `BACKEND/services/notifications.ts` with `getNotifications` and `markNotificationRead`.
+3. [x] Wire handlers in `BACKEND/index.ts` replacing `notImplemented()` stubs.
+4. [x] Create verification script `BACKEND/scripts/notifications-test.ts`.
+5. [x] Add `"notifications-test": "tsx scripts/notifications-test.ts"` to `BACKEND/package.json`.
+6. [x] Run `npm run typecheck` — 0 errors.
+7. [x] Run `npm run notifications-test` — 0 errors.
 
-## Rules & Constraints (from API_CONTRACT.md + ARCHITECTURE.md)
-- Every function takes ONE object argument and returns `ApiResult<T>`.
-- Input validated with Zod first.
-- Dates are `YYYY-MM-DD` strings. Weekday in UTC: 1=Mon .. 5=Fri. Saturdays/Sundays return weekend error.
-- `getTimetable` accepts at most ONE filter (`classId`, `facultyId`, or `roomId`).
-- `getEffectiveSchedule` accepts at most ONE filter (`facultyId` or `classId`).
+## Key Business Rules Implemented
+- `getNotifications`:
+  - Input: `{ userId: string }`
+  - Validates `userId` with Zod. Checks if user exists in `users` table. Returns `{ ok: false, error: 'User not found' }` if missing.
+  - Queries `notifications` table where `user_id = userId`, ordered by `created_at` DESC.
+  - Returns `Notification[]`.
+- `markNotificationRead`:
+  - Input: `{ notificationId: string }`
+  - Validates `notificationId` with Zod. Checks if notification exists in `notifications` table. Returns `{ ok: false, error: 'Notification not found' }` if missing.
+  - Updates `notifications` set `read = true` where `id = notificationId`.
+  - Returns `{ done: true }`.
 
-## Files created/modified
-- `BACKEND/lib/dates.ts`
-- `BACKEND/schemas.ts`
-- `BACKEND/services/timetable.ts`
-- `BACKEND/index.ts`
-- `BACKEND/scripts/timetable-test.ts`
-- `BACKEND/package.json`
+## Files Created/Modified
+- `BACKEND/schemas.ts` (updated: added GetNotificationsInput, MarkNotificationReadInput)
+- `BACKEND/services/notifications.ts` (created: getNotifications, markNotificationRead)
+- `BACKEND/index.ts` (updated: imported and registered notification handlers)
+- `BACKEND/scripts/notifications-test.ts` (created)
+- `BACKEND/package.json` (updated: added notifications-test npm script)
 
 ## Verification Results
-- `npm run typecheck` (`tsc --noEmit`) returned 0 errors.
-- `npm run timetable-test` (`tsx scripts/timetable-test.ts`) returned exit code 0:
-  - Date calculation helpers verified
-  - Multi-filter validation errors verified
-  - Weekend date validation error verified
-  - Database queries and RPC handlers executed cleanly against Supabase
+- `npm run typecheck` → Exit code 0, 0 errors
+- `npm run notifications-test` → Exit code 0, all tests passed

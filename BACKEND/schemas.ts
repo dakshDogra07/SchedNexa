@@ -39,3 +39,42 @@ export const MarkLeaveInput = z
     reason: z.string().optional(),
   })
   .strict();
+
+// ─── Open Slots services schemas ──────────────────────────────────────
+export const GetOpenSlotsInput = z
+  .object({
+    facultyId: z.string().optional(),
+    status: z.enum(['open', 'booked', 'cancelled']).optional(),
+  })
+  .strict();
+
+export const CheckConflictsInput = z
+  .object({
+    openSlotId: z.string().min(1, 'openSlotId is required'),
+    facultyId: z.string().min(1, 'facultyId is required'),
+    subjectId: z.string().min(1, 'subjectId is required'),
+  })
+  .strict();
+
+export const BookSlotInput = z
+  .object({
+    openSlotId: z.string().min(1, 'openSlotId is required'),
+    facultyId: z.string().min(1, 'facultyId is required'),
+    subjectId: z.string().min(1, 'subjectId is required'),
+  })
+  .strict();
+
+// ─── Notification services schemas ──────────────────────────────────
+export const GetNotificationsInput = z
+  .object({
+    userId: z.string().min(1, 'userId is required'),
+  })
+  .strict();
+
+export const MarkNotificationReadInput = z
+  .object({
+    notificationId: z.string().min(1, 'notificationId is required'),
+  })
+  .strict();
+
+
