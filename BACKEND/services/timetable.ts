@@ -14,10 +14,12 @@ import type {
   FacultyProfile,
   FacultySubject,
   GenerationResult,
+  MoveResult,
   Room,
   ScheduleEntry,
   Subject,
   TimeSlot,
+  Timetable,
   TimetableEntry,
 } from '@shared/types';
 import { generateTimetableGreedy } from '../engine/generator.js';
@@ -27,6 +29,7 @@ import {
   GenerateTimetableInput,
   GetEffectiveScheduleInput,
   GetTimetableInput,
+  MoveTimetableEntryInput,
 } from '../schemas.js';
 
 export async function generateTimetable(
@@ -463,3 +466,257 @@ export async function getEffectiveSchedule(
     return { ok: false, error: `getEffectiveSchedule failed: ${message}` };
   }
 }
+
+export async function moveTimetableEntry(
+  input: unknown
+): Promise<ApiResult<MoveResult>> {
+  try {
+    const parsed = MoveTimetableEntryInput.safeParse(input);
+    if (!parsed.success) {
+      return {
+        ok: false,
+        error: `Invalid input: ${parsed.error.issues.map((i) => i.message).join('; ')}`,
+      };
+    }
+
+    const { timetableId, day: targetDay, slotId: targetSlotId, roomId: customRoomId } = parsed.data;
+
+    // 1. Fetch target timetable entry
+    const { data: entryRow, error: entryErr } = await db()
+      .from('timetable')
+      .select('*')
+      .eq('id', timetableId)
+      .single();
+
+    if (entryErr || !entryRow) {
+      return { ok: false, error: `Timetable entry with id ${timetableId} not found` };
+    }
+
+    const entry = entryRow as Timetable;
+    const targetRoomId = customRoomId || entry.room_id;
+
+    // 2. Fetch target time_slots row
+    const { data: targetSlotRow, error: slotErr } = await db()
+      .from('time_slots')
+      .select('*')
+      .eq('id', targetSlotId)
+      .single();
+
+    if (slotErr || !targetSlotRow) {
+      return { ok: false, error: `Time slot with id ${targetSlotId} not found` };
+    }
+
+    const targetSlot = targetSlotRow as TimeSlot;
+
+    // 3. Fetch target room row
+    const { data: targetRoomRow, error: roomErr } = await db()
+      .from('rooms')
+      .select('*')
+      .eq('id', targetRoomId)
+      .single();
+
+    if (roomErr || !targetRoomRow) {
+      return { ok: false, error: `Room with id ${targetRoomId} not found` };
+    }
+
+    const targetRoom = targetRoomRow as Room;
+
+    // 4. Fetch subject & class details
+    const [{ data: subjectRow }, { data: classRow }] = await Promise.all([
+      db().from('subjects').select('*').eq('id', entry.subject_id).single(),
+      db().from('classes').select('*').eq('id', entry.class_id).single(),
+    ]);
+
+    if (!subjectRow || !classRow) {
+      return { ok: false, error: 'Subject or Class details not found for timetable entry' };
+    }
+
+    const subject = subjectRow as Subject;
+    const cls = classRow as Class;
+
+    // Determine if moving a single theory slot or a 2-slot lab block
+    let movingRows: Timetable[] = [];
+    let targetSlotIds: string[] = [];
+    let targetSlotNos: number[] = [];
+
+    if (!entry.block_id) {
+      // Theory lecture (1 slot)
+      movingRows = [entry];
+      targetSlotIds = [targetSlot.id];
+      targetSlotNos = [targetSlot.slot_no];
+    } else {
+      // Lab block (2 consecutive slots)
+      const { data: blockRows, error: blockErr } = await db()
+        .from('timetable')
+        .select('*, time_slots!inner(slot_no)')
+        .eq('block_id', entry.block_id);
+
+      if (blockErr || !blockRows || blockRows.length === 0) {
+        return { ok: false, error: 'Lab block entries not found' };
+      }
+
+      // Sort rows by slot_no ascending
+      const sortedBlockRows = (blockRows as any[]).sort(
+        (a, b) => a.time_slots.slot_no - b.time_slots.slot_no
+      );
+      movingRows = sortedBlockRows.map((r) => ({
+        id: r.id,
+        day: r.day,
+        slot_id: r.slot_id,
+        class_id: r.class_id,
+        subject_id: r.subject_id,
+        faculty_id: r.faculty_id,
+        room_id: r.room_id,
+        block_id: r.block_id,
+      }));
+
+      const startSlotNo = targetSlot.slot_no;
+      const endSlotNo = startSlotNo + 1;
+
+      // Validate valid lab block pair: (1,2), (2,3), (3,4), (4,5), (6,7)
+      const validLabPairs = [
+        [1, 2],
+        [2, 3],
+        [3, 4],
+        [4, 5],
+        [6, 7],
+      ];
+      const isValidPair = validLabPairs.some(
+        ([s, e]) => s === startSlotNo && e === endSlotNo
+      );
+
+      if (!isValidPair) {
+        return {
+          ok: true,
+          data: {
+            ok: false,
+            conflicts: [
+              `Target slot ${startSlotNo} cannot form a valid 2-slot lab block (valid starts: 1, 2, 3, 4, 6)`,
+            ],
+          },
+        };
+      }
+
+      // Fetch second time slot
+      const { data: secondSlotRow, error: secErr } = await db()
+        .from('time_slots')
+        .select('*')
+        .eq('slot_no', endSlotNo)
+        .single();
+
+      if (secErr || !secondSlotRow) {
+        return {
+          ok: true,
+          data: {
+            ok: false,
+            conflicts: [`Target second slot (slot_no ${endSlotNo}) not found`],
+          },
+        };
+      }
+
+      const secondSlot = secondSlotRow as TimeSlot;
+      targetSlotIds = [targetSlot.id, secondSlot.id];
+      targetSlotNos = [startSlotNo, endSlotNo];
+    }
+
+    const movingRowIds = movingRows.map((r) => r.id);
+    const conflicts: string[] = [];
+
+    // 5. Constraint Checks
+
+    // a) Room type check
+    if (subject.type === 'lab' && targetRoom.type !== 'lab') {
+      conflicts.push('Lab subjects can only be scheduled in lab rooms');
+    } else if (subject.type === 'theory' && targetRoom.type !== 'classroom') {
+      conflicts.push('Theory subjects can only be scheduled in classrooms');
+    }
+
+    // b) Room capacity check
+    if (targetRoom.capacity < cls.student_count) {
+      conflicts.push(
+        `Room capacity (${targetRoom.capacity}) is smaller than class student count (${cls.student_count})`
+      );
+    }
+
+    // c) Faculty double-booking check (excluding moving rows)
+    const { data: facBusy } = await db()
+      .from('timetable')
+      .select('id, slot_id, time_slots!inner(slot_no)')
+      .eq('day', targetDay)
+      .eq('faculty_id', entry.faculty_id)
+      .in('slot_id', targetSlotIds);
+
+    if (facBusy) {
+      const busySlots = facBusy
+        .filter((r: any) => !movingRowIds.includes(r.id))
+        .map((r: any) => r.time_slots.slot_no);
+      if (busySlots.length > 0) {
+        conflicts.push(`Faculty is already scheduled at slot(s) ${busySlots.join(', ')} on day ${targetDay}`);
+      }
+    }
+
+    // d) Class double-booking check (excluding moving rows)
+    const { data: classBusy } = await db()
+      .from('timetable')
+      .select('id, slot_id, time_slots!inner(slot_no)')
+      .eq('day', targetDay)
+      .eq('class_id', entry.class_id)
+      .in('slot_id', targetSlotIds);
+
+    if (classBusy) {
+      const busySlots = classBusy
+        .filter((r: any) => !movingRowIds.includes(r.id))
+        .map((r: any) => r.time_slots.slot_no);
+      if (busySlots.length > 0) {
+        conflicts.push(`Class is already scheduled at slot(s) ${busySlots.join(', ')} on day ${targetDay}`);
+      }
+    }
+
+    // e) Room double-booking check (excluding moving rows)
+    const { data: roomBusy } = await db()
+      .from('timetable')
+      .select('id, slot_id, time_slots!inner(slot_no)')
+      .eq('day', targetDay)
+      .eq('room_id', targetRoomId)
+      .in('slot_id', targetSlotIds);
+
+    if (roomBusy) {
+      const busySlots = roomBusy
+        .filter((r: any) => !movingRowIds.includes(r.id))
+        .map((r: any) => r.time_slots.slot_no);
+      if (busySlots.length > 0) {
+        conflicts.push(`Room is already occupied at slot(s) ${busySlots.join(', ')} on day ${targetDay}`);
+      }
+    }
+
+    // If any hard constraint fails, return conflicts without saving
+    if (conflicts.length > 0) {
+      return { ok: true, data: { ok: false, conflicts } };
+    }
+
+    // 6. Update database rows
+    for (let i = 0; i < movingRows.length; i++) {
+      const rowToUpdate = movingRows[i];
+      const newSlotId = targetSlotIds[i];
+
+      const { error: updateErr } = await db()
+        .from('timetable')
+        .update({
+          day: targetDay,
+          slot_id: newSlotId,
+          room_id: targetRoomId,
+        })
+        .eq('id', rowToUpdate.id);
+
+      if (updateErr) {
+        return { ok: false, error: `Failed to update timetable entry: ${updateErr.message}` };
+      }
+    }
+
+    return { ok: true, data: { ok: true, conflicts: [] } };
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    return { ok: false, error: `moveTimetableEntry failed: ${message}` };
+  }
+}
+
