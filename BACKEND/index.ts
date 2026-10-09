@@ -41,8 +41,28 @@ import {
   generateTimetable,
   getEffectiveSchedule,
   getTimetable,
+  moveTimetableEntry,
 } from './services/timetable.js';
 import { getWorkload } from './services/workload.js';
+import { getRoomAvailability } from './services/rooms.js';
+import { getRecommendations } from './services/recommend.js';
+import {
+  listFaculty,
+  listSubjects,
+  listClasses,
+  listRooms,
+  upsertFaculty,
+  upsertSubject,
+  upsertClass,
+  upsertRoom,
+} from './services/setup.js';
+import {
+  createLabBooking,
+  listLabBookings,
+  decideLabBooking,
+} from './services/labs.js';
+import { getDashboardStats } from './services/stats.js';
+import { getAnalytics } from './services/analytics.js';
 
 // ─── Handlers registry ──────────────────────────────────────────────
 export const handlers: Handlers = {
@@ -63,20 +83,20 @@ export const handlers: Handlers = {
 
   getWorkload,
 
-  getRoomAvailability: () => notImplemented(),
-  getRecommendations: () => notImplemented(),
-  listFaculty: () => notImplemented(),
-  listSubjects: () => notImplemented(),
-  listClasses: () => notImplemented(),
-  listRooms: () => notImplemented(),
-  upsertFaculty: () => notImplemented(),
-  upsertSubject: () => notImplemented(),
-  upsertClass: () => notImplemented(),
-  upsertRoom: () => notImplemented(),
-  moveTimetableEntry: () => notImplemented(),
-  createLabBooking: () => notImplemented(),
-  listLabBookings: () => notImplemented(),
-  decideLabBooking: () => notImplemented(),
-  getDashboardStats: () => notImplemented(),
-  getAnalytics: () => notImplemented(),
+  getRoomAvailability,
+  getRecommendations,
+  listFaculty,
+  listSubjects,
+  listClasses,
+  listRooms,
+  upsertFaculty,
+  upsertSubject,
+  upsertClass,
+  upsertRoom,
+  moveTimetableEntry,
+  createLabBooking,
+  listLabBookings,
+  decideLabBooking,
+  getDashboardStats,
+  getAnalytics,
 };

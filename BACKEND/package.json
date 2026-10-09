@@ -13,7 +13,14 @@
     "slots-test": "tsx scripts/slots-test.ts",
     "notifications-test": "tsx scripts/notifications-test.ts",
     "demo-test": "tsx scripts/demo-test.ts",
-    "workload-test": "tsx scripts/workload-test.ts"
+    "workload-test": "tsx scripts/workload-test.ts",
+    "rooms-test": "tsx scripts/rooms-test.ts",
+    "setup-test": "tsx scripts/setup-test.ts",
+    "recommend-test": "tsx scripts/recommend-test.ts",
+    "move-test": "tsx scripts/move-test.ts",
+    "labs-test": "tsx scripts/labs-test.ts",
+    "stats-test": "tsx scripts/stats-test.ts",
+    "analytics-test": "tsx scripts/analytics-test.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.0",
