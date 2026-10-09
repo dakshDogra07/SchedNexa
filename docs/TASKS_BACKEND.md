@@ -23,12 +23,12 @@ Status: [ ] todo, [~] in progress, [x] done. Exactly ONE task at a time.
 - [x] B-08 | P0 | services/notifications: getNotifications, markNotificationRead | needs: B-02
 - [x] B-09 | P0 | resetDemo + fixed demo timetable seed | needs: B-02, B-05
 - [x] B-10 | P1 | engine/workload.ts + getWorkload | needs: B-02
-- [ ] B-11 | P1 | getRoomAvailability | needs: B-03, B-05
-- [ ] B-12 | P1 | setup list/upsert functions | needs: B-02
-- [ ] B-13 | P1 | engine/recommend.ts + getRecommendations | needs: B-03, B-10
-- [ ] B-14 | P1 | moveTimetableEntry with validation | needs: B-03, B-05
-- [ ] B-15 | P1 | lab bookings (create, list, decide) | needs: B-03, B-08
-- [ ] B-16 | P1 | getDashboardStats | needs: B-05, B-07
-- [ ] B-17 | P2 | getAnalytics | needs: B-16
+- [x] B-11 | P1 | getRoomAvailability | needs: B-03, B-05
+- [x] B-12 | P1 | setup list/upsert functions | needs: B-02
+- [x] B-13 | P1 | engine/recommend.ts + getRecommendations | needs: B-03, B-10
+- [x] B-14 | P1 | moveTimetableEntry with validation | needs: B-03, B-05
+- [x] B-15 | P1 | lab bookings (create, list, decide) | needs: B-03, B-08
+- [x] B-16 | P1 | getDashboardStats | needs: B-05, B-07
+- [x] B-17 | P2 | getAnalytics | needs: B-16
 
 Integration (dev branch, human): set NEXT_PUBLIC_USE_MOCK=false and run the full docs/DEMO_SCRIPT.md; repeat after every merge.
