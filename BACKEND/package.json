@@ -1,0 +1,19 @@
+{
+  "name": "schednexa-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "ping-test": "tsx scripts/ping-test.ts"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.49.0",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.4",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}
