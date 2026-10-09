@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { getSession, type SessionData } from '@/lib/session';
+import { getSession, setSession as saveSessionCookie, DEMO_PROFILES, type SessionData } from '@/lib/session';
 import { Sidebar } from '@/components/sidebar';
 import { Header } from '@/components/header';
 
@@ -18,12 +18,14 @@ export default function AdminLayout({
   useEffect(() => {
     const current = getSession();
     if (!current || current.role !== 'admin') {
-      router.push('/login');
+      const adminProfile = DEMO_PROFILES[0];
+      saveSessionCookie(adminProfile);
+      setSession(adminProfile);
     } else {
       setSession(current);
-      setChecking(false);
     }
-  }, [router]);
+    setChecking(false);
+  }, []);
 
   if (checking) {
     return (
