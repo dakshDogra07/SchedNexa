@@ -15,14 +15,14 @@ Status: [ ] todo, [~] in progress, [x] done. Exactly ONE task at a time.
 
 - [x] B-01 | P0 | Backend package, db.ts, handlers registry with ping, read time_slots | needs: shared/types.ts
 - [x] B-02 | P0 | Run schema.sql + base seed; verify counts | needs: B-01, shared/schema.sql, shared/seed.sql
-- [~] B-03 | P0 | engine/availability.ts + engine/conflicts.ts (5 checks, span aware) + script test | needs: B-01
-- [ ] B-04 | P0 | engine/generator.ts greedy (labs first) + script: 0 conflicts on seed | needs: B-03
-- [ ] B-05 | P0 | services/timetable: generateTimetable, getTimetable, getEffectiveSchedule | needs: B-02, B-04
-- [ ] B-06 | P0 | services/leave: getLeaveImpact, markLeave (open slots + notifications) | needs: B-03, B-05
-- [ ] B-07 | P0 | services/slots: getOpenSlots, checkConflicts, bookSlot | needs: B-03, B-06
-- [ ] B-08 | P0 | services/notifications: getNotifications, markNotificationRead | needs: B-02
-- [ ] B-09 | P0 | resetDemo + fixed demo timetable seed | needs: B-02, B-05
-- [ ] B-10 | P1 | engine/workload.ts + getWorkload | needs: B-02
+- [x] B-03 | P0 | engine/availability.ts + engine/conflicts.ts (5 checks, span aware) + script test | needs: B-01
+- [x] B-04 | P0 | engine/generator.ts greedy (labs first) + script: 0 conflicts on seed | needs: B-03
+- [x] B-05 | P0 | services/timetable: generateTimetable, getTimetable, getEffectiveSchedule | needs: B-02, B-04
+- [x] B-06 | P0 | services/leave: getLeaveImpact, markLeave (open slots + notifications) | needs: B-03, B-05
+- [x] B-07 | P0 | services/slots: getOpenSlots, checkConflicts, bookSlot | needs: B-03, B-06
+- [x] B-08 | P0 | services/notifications: getNotifications, markNotificationRead | needs: B-02
+- [x] B-09 | P0 | resetDemo + fixed demo timetable seed | needs: B-02, B-05
+- [x] B-10 | P1 | engine/workload.ts + getWorkload | needs: B-02
 - [ ] B-11 | P1 | getRoomAvailability | needs: B-03, B-05
 - [ ] B-12 | P1 | setup list/upsert functions | needs: B-02
 - [ ] B-13 | P1 | engine/recommend.ts + getRecommendations | needs: B-03, B-10
