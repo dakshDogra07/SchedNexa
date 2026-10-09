@@ -5,7 +5,8 @@ import { api } from '@/lib/api';
 import { getSession } from '@/lib/session';
 import { TimetableGrid } from '@/components/timetable-grid';
 import type { TimetableEntry, ScheduleEntry } from '@shared/types';
-import { Calendar, Layers, Clock, Sparkles } from 'lucide-react';
+import { Calendar, Layers, Clock, Sparkles, Download } from 'lucide-react';
+import { exportTimetableToPdf } from '@/lib/pdf';
 
 export default function FacultyTimetablePage() {
   const [session, setSession] = useState(getSession());
@@ -92,6 +93,21 @@ export default function FacultyTimetablePage() {
               />
             </div>
           )}
+
+          <button
+            onClick={() => {
+              const activeEntries = viewMode === 'weekly' ? weeklyEntries : effectiveEntries;
+              exportTimetableToPdf({
+                title: `${session?.name || 'Faculty'} - ${viewMode === 'weekly' ? 'Weekly Timetable' : `Schedule (${selectedDate})`}`,
+                subtitle: `Department of Computer Science • SchedNexa`,
+                entries: activeEntries,
+              });
+            }}
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-card border border-border text-foreground font-semibold text-xs hover:bg-muted transition-all shadow-xs cursor-pointer"
+          >
+            <Download className="w-3.5 h-3.5 text-primary" />
+            <span>Export PDF</span>
+          </button>
         </div>
       </div>
 
