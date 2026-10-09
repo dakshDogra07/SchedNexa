@@ -3,21 +3,45 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { getSession, type SessionData } from '@/lib/session';
+import { api } from '@/lib/api';
+import type { WorkloadRow } from '@shared/types';
+import { WorkloadBar } from '@/components/workload-bar';
 import {
   Calendar,
   CalendarPlus,
   Sparkles,
-  FlaskConical,
   ArrowRight,
-  Clock,
+  BarChart3,
   BookOpen,
 } from 'lucide-react';
 
 export default function FacultyDashboardPage() {
   const [session, setSession] = useState<SessionData | null>(null);
+  const [workload, setWorkload] = useState<WorkloadRow | null>(null);
+  const [loadingWorkload, setLoadingWorkload] = useState(true);
 
   useEffect(() => {
-    setSession(getSession());
+    const s = getSession();
+    setSession(s);
+
+    async function fetchWorkload(facultyId?: string) {
+      if (!facultyId) {
+        setLoadingWorkload(false);
+        return;
+      }
+      setLoadingWorkload(true);
+      const res = await api.call('getWorkload', { facultyId });
+      if (res.ok && res.data.length > 0) {
+        setWorkload(res.data[0]);
+      }
+      setLoadingWorkload(false);
+    }
+
+    if (s?.facultyId) {
+      fetchWorkload(s.facultyId);
+    } else {
+      setLoadingWorkload(false);
+    }
   }, []);
 
   return (
@@ -30,6 +54,31 @@ export default function FacultyDashboardPage() {
         <p className="text-sm text-indigo-100 mt-1 max-w-2xl">
           Manage your lectures, schedule leave with automatic Open Academic Slot creation, and claim available slots for your subjects.
         </p>
+      </div>
+
+      {/* Personal Workload Progress Section */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <BarChart3 className="w-5 h-5 text-primary" />
+            <h2 className="text-base font-bold text-foreground">My Weekly Workload Status</h2>
+          </div>
+          <span className="text-xs text-muted-foreground">
+            Target: 20 hrs • Hard Max: 24 hrs
+          </span>
+        </div>
+
+        {loadingWorkload ? (
+          <div className="p-8 bg-card border border-border rounded-2xl text-center text-xs text-muted-foreground">
+            Loading your workload metrics...
+          </div>
+        ) : workload ? (
+          <WorkloadBar row={workload} showFacultyName={false} />
+        ) : (
+          <div className="p-6 bg-card border border-border rounded-2xl text-center text-xs text-muted-foreground">
+            Workload metrics not available for this profile.
+          </div>
+        )}
       </div>
 
       {/* Quick Actions Grid */}

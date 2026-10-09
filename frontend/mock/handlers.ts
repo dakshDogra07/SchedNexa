@@ -32,6 +32,53 @@ let activeTimetable = buildDemoTimetable();
 let activeOpenSlots: OpenSlot[] = [];
 let activeExtraLectures: ExtraLecture[] = [];
 let activeNotifications: Notification[] = [];
+let activeLabBookings: LabBooking[] = [
+  {
+    id: 'l0000000-0000-0000-0000-000000000001',
+    room_id: '50000000-0000-0000-0000-000000000005', // Lab 1
+    faculty_id: '20000000-0000-0000-0000-000000000001', // Dr. Sharma
+    date: '2026-10-14',
+    slot_id: 'a0000000-0000-0000-0000-000000000006',
+    end_slot_id: 'a0000000-0000-0000-0000-000000000007',
+    purpose: 'Specialized Distributed Systems Lab Experiment',
+    equipment: ['Computers (35)', 'LAN', 'Projector'],
+    status: 'approved',
+  },
+];
+
+// In-memory entities store for Setup CRUD
+let activeFacultyList: FacultyView[] = [
+  { id: '20000000-0000-0000-0000-000000000001', user_id: '10000000-0000-0000-0000-000000000002', name: 'Dr. Sharma', email: 'sharma@schednexa.edu', department: 'Computer Science', required_hours: 20, max_hours: 24 },
+  { id: '20000000-0000-0000-0000-000000000002', user_id: '10000000-0000-0000-0000-000000000003', name: 'Prof. Kaur', email: 'kaur@schednexa.edu', department: 'Computer Science', required_hours: 20, max_hours: 24 },
+  { id: '20000000-0000-0000-0000-000000000003', user_id: '10000000-0000-0000-0000-000000000004', name: 'Dr. Mehta', email: 'mehta@schednexa.edu', department: 'Computer Science', required_hours: 20, max_hours: 24 },
+  { id: '20000000-0000-0000-0000-000000000004', user_id: '10000000-0000-0000-0000-000000000005', name: 'Dr. Verma', email: 'verma@schednexa.edu', department: 'Information Tech', required_hours: 20, max_hours: 24 },
+  { id: '20000000-0000-0000-0000-000000000005', user_id: '10000000-0000-0000-0000-000000000006', name: 'Dr. Iyer', email: 'iyer@schednexa.edu', department: 'Computer Science', required_hours: 20, max_hours: 24 },
+];
+
+let activeSubjectsList: Subject[] = [
+  { id: '30000000-0000-0000-0000-000000000001', name: 'Database Management Systems', code: 'CS301', department: 'Computer Science', semester: 3, type: 'theory', hours_per_week: 4 },
+  { id: '30000000-0000-0000-0000-000000000002', name: 'Data Structures & Algorithms', code: 'CS302', department: 'Computer Science', semester: 3, type: 'theory', hours_per_week: 4 },
+  { id: '30000000-0000-0000-0000-000000000005', name: 'DBMS Laboratory', code: 'CS305', department: 'Computer Science', semester: 3, type: 'lab', hours_per_week: 2 },
+  { id: '30000000-0000-0000-0000-000000000007', name: 'Operating Systems', code: 'CS501', department: 'Computer Science', semester: 5, type: 'theory', hours_per_week: 4 },
+  { id: '30000000-0000-0000-0000-000000000008', name: 'Computer Networks', code: 'CS502', department: 'Computer Science', semester: 5, type: 'theory', hours_per_week: 4 },
+  { id: '30000000-0000-0000-0000-000000000011', name: 'Operating Systems Laboratory', code: 'CS505', department: 'Computer Science', semester: 5, type: 'lab', hours_per_week: 2 },
+];
+
+let activeClassesList: Class[] = [
+  { id: '40000000-0000-0000-0000-000000000001', name: 'CSE-3A', department: 'Computer Science', semester: 3, student_count: 60 },
+  { id: '40000000-0000-0000-0000-000000000002', name: 'CSE-3B', department: 'Computer Science', semester: 3, student_count: 58 },
+  { id: '40000000-0000-0000-0000-000000000003', name: 'CSE-5A', department: 'Computer Science', semester: 5, student_count: 55 },
+  { id: '40000000-0000-0000-0000-000000000004', name: 'CSE-5B', department: 'Computer Science', semester: 5, student_count: 54 },
+];
+
+let activeRoomsList: Room[] = [
+  { id: '50000000-0000-0000-0000-000000000001', name: 'Room 101', capacity: 60, type: 'classroom', equipment: ['Projector', 'Whiteboard', 'Mic'] },
+  { id: '50000000-0000-0000-0000-000000000002', name: 'Room 102', capacity: 60, type: 'classroom', equipment: ['Projector', 'Whiteboard'] },
+  { id: '50000000-0000-0000-0000-000000000003', name: 'Room 103', capacity: 60, type: 'classroom', equipment: ['Projector', 'Whiteboard'] },
+  { id: '50000000-0000-0000-0000-000000000004', name: 'Room 104', capacity: 60, type: 'classroom', equipment: ['Projector', 'Whiteboard'] },
+  { id: '50000000-0000-0000-0000-000000000005', name: 'Lab 1', capacity: 30, type: 'lab', equipment: ['Computers (35)', 'LAN', 'Projector'] },
+  { id: '50000000-0000-0000-0000-000000000006', name: 'Lab 2', capacity: 30, type: 'lab', equipment: ['Computers (35)', 'LAN', 'Projector'] },
+];
 
 // Mock Handlers satisfying ApiContract
 export const mockHandlers: {
@@ -378,52 +425,202 @@ export const mockHandlers: {
     return { ok: true, data: { done: true } };
   },
 
-  getWorkload: async () => {
-    return { ok: true, data: [] };
+  getWorkload: async (input) => {
+    const facultyList = [
+      { id: '20000000-0000-0000-0000-000000000001', name: 'Dr. Sharma', required: 20, max: 24 },
+      { id: '20000000-0000-0000-0000-000000000002', name: 'Prof. Kaur', required: 20, max: 24 },
+      { id: '20000000-0000-0000-0000-000000000003', name: 'Dr. Mehta', required: 20, max: 24 },
+      { id: '20000000-0000-0000-0000-000000000004', name: 'Dr. Verma', required: 20, max: 24 },
+      { id: '20000000-0000-0000-0000-000000000005', name: 'Dr. Iyer', required: 20, max: 24 },
+    ];
+
+    const targets = input?.facultyId
+      ? facultyList.filter((f) => f.id === input.facultyId)
+      : facultyList;
+
+    const rows: WorkloadRow[] = targets.map((fac) => {
+      // assigned_hours = count of timetable rows for that faculty (leave does not reduce it)
+      const assigned = activeTimetable.filter((r) => r.facultyId === fac.id).length;
+      
+      // extra_hours = sum of span over confirmed extra lectures
+      const extraLectures = activeExtraLectures.filter((el) => el.faculty_id === fac.id && el.status === 'confirmed');
+      const extra = extraLectures.length; // 1 slot for theory
+
+      const total = assigned + extra;
+
+      let status: WorkloadRow['status'] = 'ok';
+      if (assigned < fac.required) {
+        status = 'under';
+      } else if (total > fac.max) {
+        status = 'over';
+      }
+
+      return {
+        facultyId: fac.id,
+        facultyName: fac.name,
+        requiredHours: fac.required,
+        assignedHours: assigned,
+        extraHours: extra,
+        totalHours: total,
+        maxHours: fac.max,
+        status,
+      };
+    });
+
+    return { ok: true, data: rows };
   },
 
   getRoomAvailability: async (input) => {
-    const availability: RoomAvailability = {
-      date: input.date,
-      rooms: [],
-    };
-    return { ok: true, data: availability };
+    const demoRoomsList: Array<{ id: string; name: string; type: 'classroom' | 'lab'; capacity: number }> = [
+      { id: '50000000-0000-0000-0000-000000000001', name: 'Room 101', type: 'classroom', capacity: 60 },
+      { id: '50000000-0000-0000-0000-000000000002', name: 'Room 102', type: 'classroom', capacity: 60 },
+      { id: '50000000-0000-0000-0000-000000000003', name: 'Room 103', type: 'classroom', capacity: 60 },
+      { id: '50000000-0000-0000-0000-000000000004', name: 'Room 104', type: 'classroom', capacity: 60 },
+      { id: '50000000-0000-0000-0000-000000000005', name: 'Lab 1', type: 'lab', capacity: 30 },
+      { id: '50000000-0000-0000-0000-000000000006', name: 'Lab 2', type: 'lab', capacity: 30 },
+    ];
+
+    const d = new Date(input.date);
+    const dayOfWeek = d.getUTCDay() === 0 ? 7 : d.getUTCDay();
+    const day = dayOfWeek >= 1 && dayOfWeek <= 5 ? dayOfWeek : 5;
+
+    const timetableForDay = activeTimetable.filter((r) => r.day === day);
+
+    const rooms = demoRoomsList.map((rm) => {
+      const slots = TIME_SLOT_DEFS.map((slotDef) => {
+        const slotId = `a0000000-0000-0000-0000-${String(slotDef.slotNo).padStart(12, '0')}`;
+        const entry = timetableForDay.find((t) => t.roomId === rm.id && t.slotNo === slotDef.slotNo);
+
+        if (!entry) {
+          return {
+            slotId,
+            slotNo: slotDef.slotNo,
+            state: 'free' as const,
+            who: null,
+          };
+        }
+
+        // Check if there is an active open slot for this timetable row on this date
+        const openSlot = activeOpenSlots.find((os) => os.timetable_id === entry.id && os.date === input.date);
+        if (openSlot) {
+          if (openSlot.status === 'open') {
+            return {
+              slotId,
+              slotNo: slotDef.slotNo,
+              state: 'open' as const,
+              who: `Open Academic Slot (${entry.className})`,
+            };
+          } else if (openSlot.status === 'booked') {
+            const extra = activeExtraLectures.find((el) => el.open_slot_id === openSlot.id);
+            return {
+              slotId,
+              slotNo: slotDef.slotNo,
+              state: 'busy' as const,
+              who: `${entry.className} (Booked)`,
+            };
+          }
+        }
+
+        return {
+          slotId,
+          slotNo: slotDef.slotNo,
+          state: 'busy' as const,
+          who: `${entry.subjectName} (${entry.className})`,
+        };
+      });
+
+      return {
+        roomId: rm.id,
+        roomName: rm.name,
+        roomType: rm.type,
+        slots,
+      };
+    });
+
+    return { ok: true, data: { date: input.date, rooms } };
   },
 
-  getRecommendations: async () => {
-    return { ok: true, data: [] };
+  getRecommendations: async (input) => {
+    // If openSlotId provided, find the open slot
+    const slot = activeOpenSlots.find((s) => s.id === input.openSlotId);
+    
+    // Provide ranked candidates
+    const recs: Recommendation[] = [
+      {
+        facultyId: '20000000-0000-0000-0000-000000000002',
+        facultyName: 'Prof. Kaur',
+        score: 95,
+        reasons: [
+          'Assigned to class curriculum (Operating Systems)',
+          '100% free at requested period (No scheduling conflict)',
+          'Within statutory workload bounds (20 hrs / 24 max)',
+        ],
+      },
+      {
+        facultyId: '20000000-0000-0000-0000-000000000003',
+        facultyName: 'Dr. Mehta',
+        score: 82,
+        reasons: [
+          'Assigned to department curriculum (Computer Organization)',
+          'Free during period',
+          'Sufficient weekly workload balance',
+        ],
+      },
+      {
+        facultyId: '20000000-0000-0000-0000-000000000004',
+        facultyName: 'Dr. Verma',
+        score: 68,
+        reasons: [
+          'Department peer faculty',
+          'Free slot available',
+          'Acceptable substitution profile',
+        ],
+      },
+    ];
+
+    return { ok: true, data: recs };
   },
 
   listFaculty: async () => {
-    return { ok: true, data: [] };
+    return { ok: true, data: activeFacultyList };
   },
 
   listSubjects: async () => {
-    return { ok: true, data: [] };
+    return { ok: true, data: activeSubjectsList };
   },
 
   listClasses: async () => {
-    return { ok: true, data: [] };
+    return { ok: true, data: activeClassesList };
   },
 
   listRooms: async () => {
-    return { ok: true, data: [] };
+    return { ok: true, data: activeRoomsList };
   },
 
   upsertFaculty: async (input) => {
-    const profile: FacultyProfile = {
-      id: input.id || '20000000-0000-0000-0000-000000000099',
-      user_id: input.user_id,
+    const id = input.id || `20000000-0000-0000-0000-${String(activeFacultyList.length + 1).padStart(12, '0')}`;
+    const existing = activeFacultyList.find((f) => f.id === id);
+    const profile: FacultyView = {
+      id,
+      user_id: input.user_id || existing?.user_id || `10000000-0000-0000-0000-${String(activeFacultyList.length + 1).padStart(12, '0')}`,
+      name: existing?.name || 'Faculty Member',
+      email: existing?.email || 'faculty@schednexa.edu',
       department: input.department,
       required_hours: input.required_hours,
       max_hours: input.max_hours,
     };
+    if (existing) {
+      Object.assign(existing, profile);
+    } else {
+      activeFacultyList.push(profile);
+    }
     return { ok: true, data: profile };
   },
 
   upsertSubject: async (input) => {
+    const id = input.id || `30000000-0000-0000-0000-${String(activeSubjectsList.length + 1).padStart(12, '0')}`;
     const subject: Subject = {
-      id: input.id || '30000000-0000-0000-0000-000000000099',
+      id,
       name: input.name,
       code: input.code,
       department: input.department,
@@ -431,52 +628,160 @@ export const mockHandlers: {
       type: input.type,
       hours_per_week: input.hours_per_week,
     };
+    const existing = activeSubjectsList.find((s) => s.id === id);
+    if (existing) {
+      Object.assign(existing, subject);
+    } else {
+      activeSubjectsList.push(subject);
+    }
     return { ok: true, data: subject };
   },
 
   upsertClass: async (input) => {
+    const id = input.id || `40000000-0000-0000-0000-${String(activeClassesList.length + 1).padStart(12, '0')}`;
     const cls: Class = {
-      id: input.id || '40000000-0000-0000-0000-000000000099',
+      id,
       name: input.name,
       department: input.department,
       semester: input.semester,
       student_count: input.student_count,
     };
+    const existing = activeClassesList.find((c) => c.id === id);
+    if (existing) {
+      Object.assign(existing, cls);
+    } else {
+      activeClassesList.push(cls);
+    }
     return { ok: true, data: cls };
   },
 
   upsertRoom: async (input) => {
+    const id = input.id || `50000000-0000-0000-0000-${String(activeRoomsList.length + 1).padStart(12, '0')}`;
     const room: Room = {
-      id: input.id || '50000000-0000-0000-0000-000000000099',
+      id,
       name: input.name,
       capacity: input.capacity,
       type: input.type,
       equipment: input.equipment,
     };
+    const existing = activeRoomsList.find((r) => r.id === id);
+    if (existing) {
+      Object.assign(existing, room);
+    } else {
+      activeRoomsList.push(room);
+    }
     return { ok: true, data: room };
   },
 
-  moveTimetableEntry: async () => {
+  moveTimetableEntry: async (input) => {
+    const entry = activeTimetable.find((e) => e.id === input.timetableId);
+    if (!entry) {
+      return { ok: false, error: 'Timetable entry not found' };
+    }
+
+    // Determine target slot number
+    const slotDef = TIME_SLOT_DEFS.find(
+      (ts) => `a0000000-0000-0000-0000-${String(ts.slotNo).padStart(12, '0')}` === input.slotId
+    );
+    const targetSlotNo = slotDef ? slotDef.slotNo : 1;
+    const targetRoomId = input.roomId || entry.roomId;
+
+    const conflicts: string[] = [];
+
+    // Check Room Collision
+    const roomConflict = activeTimetable.find(
+      (e) =>
+        e.id !== input.timetableId &&
+        e.day === input.day &&
+        e.slotNo === targetSlotNo &&
+        e.roomId === targetRoomId
+    );
+    if (roomConflict) {
+      conflicts.push(
+        `Room conflict: ${roomConflict.roomName} is already occupied by ${roomConflict.className} (${roomConflict.subjectName}).`
+      );
+    }
+
+    // Check Faculty Collision
+    const facultyConflict = activeTimetable.find(
+      (e) =>
+        e.id !== input.timetableId &&
+        e.day === input.day &&
+        e.slotNo === targetSlotNo &&
+        e.facultyId === entry.facultyId
+    );
+    if (facultyConflict) {
+      conflicts.push(
+        `Faculty conflict: ${entry.facultyName} is already teaching ${facultyConflict.subjectName} for ${facultyConflict.className} in ${facultyConflict.roomName}.`
+      );
+    }
+
+    // Check Class Collision
+    const classConflict = activeTimetable.find(
+      (e) =>
+        e.id !== input.timetableId &&
+        e.day === input.day &&
+        e.slotNo === targetSlotNo &&
+        e.classId === entry.classId
+    );
+    if (classConflict) {
+      conflicts.push(
+        `Class conflict: ${entry.className} is already scheduled for ${classConflict.subjectName} in ${classConflict.roomName}.`
+      );
+    }
+
+    if (conflicts.length > 0) {
+      return { ok: true, data: { ok: false, conflicts } };
+    }
+
+    // Apply move
+    entry.day = input.day;
+    entry.slotNo = targetSlotNo;
+    entry.slotId = input.slotId;
+    if (input.roomId) {
+      const rm = activeRoomsList.find((r) => r.id === input.roomId);
+      entry.roomId = input.roomId;
+      if (rm) entry.roomName = rm.name;
+    }
+
     return { ok: true, data: { ok: true, conflicts: [] } };
   },
 
   createLabBooking: async (input) => {
     const booking: LabBooking = {
-      id: 'l0000000-0000-0000-0000-000000000001',
+      id: `l0000000-0000-0000-0000-${String(activeLabBookings.length + 1).padStart(12, '0')}`,
       room_id: input.roomId,
       faculty_id: input.facultyId,
       date: input.date,
       slot_id: input.slotId,
-      end_slot_id: 'a0000000-0000-0000-0000-000000000002',
+      end_slot_id: input.slotId,
       purpose: input.purpose,
       equipment: input.equipment,
       status: 'approved',
     };
+    activeLabBookings.unshift(booking);
+
+    // Also push a notification
+    activeNotifications.unshift({
+      id: `notif-0000-0000-0000-${String(activeNotifications.length + 1).padStart(12, '0')}`,
+      user_id: input.facultyId,
+      title: 'Lab Booking Approved',
+      message: `Your booking for ${input.roomId.includes('6') ? 'Lab 2' : 'Lab 1'} on ${input.date} has been confirmed.`,
+      type: 'lab_booking',
+      related_id: booking.id,
+      read: false,
+      created_at: new Date().toISOString(),
+    });
+
     return { ok: true, data: booking };
   },
 
-  listLabBookings: async () => {
-    return { ok: true, data: [] };
+  listLabBookings: async (input) => {
+    let list = activeLabBookings;
+    if (input?.facultyId) {
+      list = list.filter((b) => b.faculty_id === input.facultyId);
+    }
+    return { ok: true, data: list };
   },
 
   decideLabBooking: async (input) => {
