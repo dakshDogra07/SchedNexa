@@ -25,60 +25,42 @@ import type {
   AnalyticsData,
 } from '@shared/types';
 
-import { buildDemoTimetable, DAYS, TIME_SLOT_DEFS } from './demo-timetable';
+import {
+  buildDemoTimetable,
+  DAYS,
+  TIME_SLOT_DEFS,
+  SEED_CLASSES,
+  SEED_FACULTY,
+  SEED_ROOMS,
+  SEED_SUBJECTS,
+  SEED_USERS,
+  SEED_FACULTY_SUBJECTS,
+} from './demo-timetable';
 
-// In-memory store of timetable entries
-let activeTimetable = buildDemoTimetable();
+// In-memory store of timetable entries initialized with all 314 sessions
+let activeTimetable: TimetableEntry[] = buildDemoTimetable();
 let activeOpenSlots: OpenSlot[] = [];
 let activeExtraLectures: ExtraLecture[] = [];
 let activeNotifications: Notification[] = [];
 let activeLabBookings: LabBooking[] = [
   {
     id: 'l0000000-0000-0000-0000-000000000001',
-    room_id: '50000000-0000-0000-0000-000000000005', // Lab 1
-    faculty_id: '20000000-0000-0000-0000-000000000001', // Dr. Sharma
+    room_id: '50000000-0000-0000-0000-000000000005',
+    faculty_id: '20000000-0000-0000-0000-000000000001',
     date: '2026-10-14',
     slot_id: 'a0000000-0000-0000-0000-000000000006',
     end_slot_id: 'a0000000-0000-0000-0000-000000000007',
-    purpose: 'Specialized Distributed Systems Lab Experiment',
+    purpose: 'Specialized Advanced Computing Lab',
     equipment: ['Computers (35)', 'LAN', 'Projector'],
     status: 'approved',
   },
 ];
 
-// In-memory entities store for Setup CRUD
-let activeFacultyList: FacultyView[] = [
-  { id: '20000000-0000-0000-0000-000000000001', user_id: '10000000-0000-0000-0000-000000000002', name: 'Dr. Sharma', email: 'sharma@schednexa.edu', department: 'Computer Science', required_hours: 20, max_hours: 24 },
-  { id: '20000000-0000-0000-0000-000000000002', user_id: '10000000-0000-0000-0000-000000000003', name: 'Prof. Kaur', email: 'kaur@schednexa.edu', department: 'Computer Science', required_hours: 20, max_hours: 24 },
-  { id: '20000000-0000-0000-0000-000000000003', user_id: '10000000-0000-0000-0000-000000000004', name: 'Dr. Mehta', email: 'mehta@schednexa.edu', department: 'Computer Science', required_hours: 20, max_hours: 24 },
-  { id: '20000000-0000-0000-0000-000000000004', user_id: '10000000-0000-0000-0000-000000000005', name: 'Dr. Verma', email: 'verma@schednexa.edu', department: 'Information Tech', required_hours: 20, max_hours: 24 },
-  { id: '20000000-0000-0000-0000-000000000005', user_id: '10000000-0000-0000-0000-000000000006', name: 'Dr. Iyer', email: 'iyer@schednexa.edu', department: 'Computer Science', required_hours: 20, max_hours: 24 },
-];
-
-let activeSubjectsList: Subject[] = [
-  { id: '30000000-0000-0000-0000-000000000001', name: 'Database Management Systems', code: 'CS301', department: 'Computer Science', semester: 3, type: 'theory', hours_per_week: 4 },
-  { id: '30000000-0000-0000-0000-000000000002', name: 'Data Structures & Algorithms', code: 'CS302', department: 'Computer Science', semester: 3, type: 'theory', hours_per_week: 4 },
-  { id: '30000000-0000-0000-0000-000000000005', name: 'DBMS Laboratory', code: 'CS305', department: 'Computer Science', semester: 3, type: 'lab', hours_per_week: 2 },
-  { id: '30000000-0000-0000-0000-000000000007', name: 'Operating Systems', code: 'CS501', department: 'Computer Science', semester: 5, type: 'theory', hours_per_week: 4 },
-  { id: '30000000-0000-0000-0000-000000000008', name: 'Computer Networks', code: 'CS502', department: 'Computer Science', semester: 5, type: 'theory', hours_per_week: 4 },
-  { id: '30000000-0000-0000-0000-000000000011', name: 'Operating Systems Laboratory', code: 'CS505', department: 'Computer Science', semester: 5, type: 'lab', hours_per_week: 2 },
-];
-
-let activeClassesList: Class[] = [
-  { id: '40000000-0000-0000-0000-000000000001', name: 'CSE-3A', department: 'Computer Science', semester: 3, student_count: 60 },
-  { id: '40000000-0000-0000-0000-000000000002', name: 'CSE-3B', department: 'Computer Science', semester: 3, student_count: 58 },
-  { id: '40000000-0000-0000-0000-000000000003', name: 'CSE-5A', department: 'Computer Science', semester: 5, student_count: 55 },
-  { id: '40000000-0000-0000-0000-000000000004', name: 'CSE-5B', department: 'Computer Science', semester: 5, student_count: 54 },
-];
-
-let activeRoomsList: Room[] = [
-  { id: '50000000-0000-0000-0000-000000000001', name: 'Room 101', capacity: 60, type: 'classroom', equipment: ['Projector', 'Whiteboard', 'Mic'] },
-  { id: '50000000-0000-0000-0000-000000000002', name: 'Room 102', capacity: 60, type: 'classroom', equipment: ['Projector', 'Whiteboard'] },
-  { id: '50000000-0000-0000-0000-000000000003', name: 'Room 103', capacity: 60, type: 'classroom', equipment: ['Projector', 'Whiteboard'] },
-  { id: '50000000-0000-0000-0000-000000000004', name: 'Room 104', capacity: 60, type: 'classroom', equipment: ['Projector', 'Whiteboard'] },
-  { id: '50000000-0000-0000-0000-000000000005', name: 'Lab 1', capacity: 30, type: 'lab', equipment: ['Computers (35)', 'LAN', 'Projector'] },
-  { id: '50000000-0000-0000-0000-000000000006', name: 'Lab 2', capacity: 30, type: 'lab', equipment: ['Computers (35)', 'LAN', 'Projector'] },
-];
+// In-memory entities store for Setup CRUD initialized from real master datasets
+let activeFacultyList: FacultyView[] = [...SEED_FACULTY];
+let activeSubjectsList: Subject[] = [...SEED_SUBJECTS];
+let activeClassesList: Class[] = [...SEED_CLASSES];
+let activeRoomsList: Room[] = [...SEED_ROOMS];
 
 // Mock Handlers satisfying ApiContract
 export const mockHandlers: {
@@ -89,28 +71,24 @@ export const mockHandlers: {
   },
 
   getDemoUsers: async () => {
-    const users: DemoUser[] = [
-      { id: '10000000-0000-0000-0000-000000000001', name: 'Admin', role: 'admin' },
-      { id: '10000000-0000-0000-0000-000000000002', name: 'Dr. Sharma', role: 'faculty', facultyId: '20000000-0000-0000-0000-000000000001' },
-      { id: '10000000-0000-0000-0000-000000000003', name: 'Prof. Kaur', role: 'faculty', facultyId: '20000000-0000-0000-0000-000000000002' },
-    ];
-    return { ok: true, data: users };
+    return { ok: true, data: SEED_USERS };
   },
 
   resetDemo: async () => {
     activeTimetable = buildDemoTimetable();
     activeOpenSlots = [];
     activeExtraLectures = [];
-    return { ok: true, data: { message: 'Demo data reset successfully to fixed seed state.' } };
+    activeNotifications = [];
+    return { ok: true, data: { message: 'Demo data reset successfully to clean seeded state.' } };
   },
 
   generateTimetable: async () => {
     activeTimetable = buildDemoTimetable();
     const result: GenerationResult = {
-      lecturesPlaced: 100,
+      lecturesPlaced: activeTimetable.length,
       conflicts: 0,
       unscheduled: [],
-      facultyAtFullLoad: 5,
+      facultyAtFullLoad: activeFacultyList.length,
     };
     return { ok: true, data: result };
   },
@@ -124,7 +102,6 @@ export const mockHandlers: {
   },
 
   getEffectiveSchedule: async (input) => {
-    // Map date to weekday (1=Mon..5=Fri)
     const d = new Date(input.date);
     const day = d.getUTCDay() === 0 ? 7 : d.getUTCDay();
 
@@ -133,7 +110,6 @@ export const mockHandlers: {
     if (input.facultyId) rows = rows.filter((r) => r.facultyId === input.facultyId);
 
     const schedule: ScheduleEntry[] = rows.map((r) => {
-      // Check if open slot exists for this timetable entry on this date
       const openSlot = activeOpenSlots.find((os) => os.timetable_id === r.id && os.date === input.date);
       const extra = openSlot ? activeExtraLectures.find((el) => el.open_slot_id === openSlot.id) : null;
 
@@ -152,8 +128,10 @@ export const mockHandlers: {
           facId = null as any;
         } else if (openSlot.status === 'booked' && extra) {
           state = 'extra';
-          subjName = 'Operating Systems'; // Demo Kaur subject
-          facName = 'Prof. Kaur';
+          const claimingFac = activeFacultyList.find((f) => f.id === extra.faculty_id);
+          const claimingSub = activeSubjectsList.find((s) => s.id === extra.subject_id);
+          subjName = claimingSub?.name || 'Extra Lecture';
+          facName = claimingFac?.name || 'Faculty';
           facId = extra.faculty_id;
           subjId = extra.subject_id;
         }
@@ -190,7 +168,6 @@ export const mockHandlers: {
   },
 
   getLeaveImpact: async (input) => {
-    // Generate dates between dateFrom and dateTo
     const start = new Date(input.dateFrom);
     const end = new Date(input.dateTo);
     const affected: AffectedLecture[] = [];
@@ -198,7 +175,6 @@ export const mockHandlers: {
     const curr = new Date(start);
     while (curr <= end) {
       const dayOfWeek = curr.getUTCDay();
-      // Skip weekends (0=Sun, 6=Sat)
       if (dayOfWeek >= 1 && dayOfWeek <= 5) {
         const dateStr = curr.toISOString().split('T')[0];
         const rows = activeTimetable.filter(
@@ -236,6 +212,8 @@ export const mockHandlers: {
     const start = new Date(input.dateFrom);
     const end = new Date(input.dateTo);
     const createdSlots: OpenSlot[] = [];
+    const faculty = activeFacultyList.find((f) => f.id === input.facultyId);
+    const facultyName = faculty?.name || 'Faculty';
 
     const curr = new Date(start);
     while (curr <= end) {
@@ -250,7 +228,7 @@ export const mockHandlers: {
           const slotId = `os000000-0000-0000-0000-${String(activeOpenSlots.length + 1).padStart(12, '0')}`;
           const newSlot: OpenSlot = {
             id: slotId,
-            leave_request_id: 'lr000000-0000-0000-0000-000000000001',
+            leave_request_id: `lr000000-0000-0000-0000-${String(activeOpenSlots.length + 1).padStart(12, '0')}`,
             timetable_id: r.id,
             date: dateStr,
             slot_id: r.slotId,
@@ -263,17 +241,21 @@ export const mockHandlers: {
           activeOpenSlots.push(newSlot);
           createdSlots.push(newSlot);
 
-          // Add notification for other faculty members (e.g. Kaur)
-          activeNotifications.unshift({
-            id: `notif-0000-0000-0000-${String(activeNotifications.length + 1).padStart(12, '0')}`,
-            user_id: '10000000-0000-0000-0000-000000000003', // Prof. Kaur
-            title: 'New Open Academic Slot Available',
-            message: `Dr. Sharma marked leave on ${dateStr} for ${r.subjectName} (${r.className}, ${r.startTime}-${r.endTime}). Click to claim this slot for your subject!`,
-            type: 'open_slot',
-            related_id: newSlot.id,
-            read: false,
-            created_at: new Date().toISOString(),
-          });
+          // Add notification for peer faculty members
+          activeFacultyList
+            .filter((f) => f.id !== input.facultyId)
+            .forEach((otherFac) => {
+              activeNotifications.unshift({
+                id: `notif-0000-0000-0000-${String(activeNotifications.length + 1).padStart(12, '0')}`,
+                user_id: otherFac.user_id,
+                title: 'New Open Academic Slot Available',
+                message: `${facultyName} marked leave on ${dateStr} for ${r.subjectName} (${r.className}, ${r.startTime}-${r.endTime}). Click to claim this slot for your subject!`,
+                type: 'open_slot',
+                related_id: newSlot.id,
+                read: false,
+                created_at: new Date().toISOString(),
+              });
+            });
         }
       }
       curr.setUTCDate(curr.getUTCDate() + 1);
@@ -283,27 +265,6 @@ export const mockHandlers: {
   },
 
   getOpenSlots: async (input) => {
-    // If no open slots exist yet, ensure the demo Sharma Friday slot is seeded for instant testing
-    if (activeOpenSlots.length === 0) {
-      const sharmaFridayRow = activeTimetable.find(
-        (r) => r.day === 5 && r.slotNo === 2 && r.facultyName === 'Dr. Sharma'
-      );
-      if (sharmaFridayRow) {
-        activeOpenSlots.push({
-          id: 'os000000-0000-0000-0000-000000000001',
-          leave_request_id: 'lr000000-0000-0000-0000-000000000001',
-          timetable_id: sharmaFridayRow.id,
-          date: '2026-10-16', // Demo Friday
-          slot_id: sharmaFridayRow.slotId,
-          end_slot_id: sharmaFridayRow.slotId,
-          class_id: sharmaFridayRow.classId,
-          room_id: sharmaFridayRow.roomId,
-          original_faculty_id: sharmaFridayRow.facultyId,
-          status: 'open',
-        });
-      }
-    }
-
     const filtered = input?.status
       ? activeOpenSlots.filter((os) => os.status === input.status)
       : activeOpenSlots;
@@ -317,21 +278,21 @@ export const mockHandlers: {
         date: os.date,
         slotId: os.slot_id,
         endSlotId: os.end_slot_id,
-        slotNo: timetableRow?.slotNo ?? 2,
-        endSlotNo: timetableRow?.slotNo ?? 2,
-        startTime: timetableRow?.startTime ?? '09:50',
-        endTime: timetableRow?.endTime ?? '10:40',
+        slotNo: timetableRow?.slotNo ?? 1,
+        endSlotNo: timetableRow?.slotNo ?? 1,
+        startTime: timetableRow?.startTime ?? '09:00',
+        endTime: timetableRow?.endTime ?? '09:50',
         span: timetableRow?.blockId ? 2 : 1,
         classId: os.class_id,
-        className: timetableRow?.className ?? 'CSE-3A',
+        className: timetableRow?.className ?? 'Class',
         roomId: os.room_id,
-        roomName: timetableRow?.roomName ?? 'Room 101',
+        roomName: timetableRow?.roomName ?? 'Room',
         originalFacultyId: os.original_faculty_id,
-        originalFacultyName: timetableRow?.facultyName ?? 'Dr. Sharma',
-        originalSubjectId: timetableRow?.subjectId ?? '30000000-0000-0000-0000-000000000001',
-        originalSubjectName: timetableRow?.subjectName ?? 'DBMS',
+        originalFacultyName: timetableRow?.facultyName ?? 'Faculty',
+        originalSubjectId: timetableRow?.subjectId ?? '',
+        originalSubjectName: timetableRow?.subjectName ?? 'Subject',
         status: os.status,
-        score: input?.facultyId ? 90 : null, // 90/100 recommendation match score
+        score: input?.facultyId ? 90 : null,
       };
     });
 
@@ -339,7 +300,6 @@ export const mockHandlers: {
   },
 
   checkConflicts: async (input) => {
-    // 5 deterministic checks from engine/conflicts.ts
     const checks: CheckResult = {
       ok: true,
       checks: [
@@ -347,13 +307,13 @@ export const mockHandlers: {
           key: 'faculty_free',
           label: 'Faculty Free',
           passed: true,
-          detail: 'Faculty has no other timetable lecture, confirmed extra lecture, or lab booking at this slot.',
+          detail: 'Faculty has no other timetable lecture or lab booking at this slot.',
         },
         {
           key: 'subject_eligible',
           label: 'Subject Eligible',
           passed: true,
-          detail: 'Subject belongs to faculty assigned curriculum and matches room type (classroom/lab).',
+          detail: 'Subject belongs to curriculum and matches room type.',
         },
         {
           key: 'class_free',
@@ -365,13 +325,13 @@ export const mockHandlers: {
           key: 'room_reserved',
           label: 'Room Reserved',
           passed: true,
-          detail: 'Room 101 is reserved exclusively for this open slot.',
+          detail: 'Room is reserved exclusively for this open academic slot.',
         },
         {
           key: 'workload_within_max',
           label: 'Workload Within Max Limit',
           passed: true,
-          detail: 'Faculty current workload + 1 hour does not exceed maximum allowable weekly hours (24 hrs).',
+          detail: 'Faculty workload + 1 hour does not exceed maximum allowable weekly workload.',
         },
       ],
     };
@@ -399,17 +359,21 @@ export const mockHandlers: {
     };
     activeExtraLectures.push(extra);
 
-    // Notify confirmation
-    activeNotifications.unshift({
-      id: `notif-0000-0000-0000-${String(activeNotifications.length + 1).padStart(12, '0')}`,
-      user_id: '10000000-0000-0000-0000-000000000003', // Prof. Kaur
-      title: 'Booking Confirmed!',
-      message: `You successfully booked the open slot on ${slot.date} for Operating Systems (CSE-3A, Room 101).`,
-      type: 'booking_confirmed',
-      related_id: extra.id,
-      read: false,
-      created_at: new Date().toISOString(),
-    });
+    const claimingFac = activeFacultyList.find((f) => f.id === input.facultyId);
+    const claimingSub = activeSubjectsList.find((s) => s.id === input.subjectId);
+
+    if (claimingFac) {
+      activeNotifications.unshift({
+        id: `notif-0000-0000-0000-${String(activeNotifications.length + 1).padStart(12, '0')}`,
+        user_id: claimingFac.user_id,
+        title: 'Booking Confirmed!',
+        message: `You successfully booked the open slot on ${slot.date} for ${claimingSub?.name || 'your subject'}.`,
+        type: 'booking_confirmed',
+        related_id: extra.id,
+        read: false,
+        created_at: new Date().toISOString(),
+      });
+    }
 
     return { ok: true, data: extra };
   },
@@ -426,43 +390,33 @@ export const mockHandlers: {
   },
 
   getWorkload: async (input) => {
-    const facultyList = [
-      { id: '20000000-0000-0000-0000-000000000001', name: 'Dr. Sharma', required: 20, max: 24 },
-      { id: '20000000-0000-0000-0000-000000000002', name: 'Prof. Kaur', required: 20, max: 24 },
-      { id: '20000000-0000-0000-0000-000000000003', name: 'Dr. Mehta', required: 20, max: 24 },
-      { id: '20000000-0000-0000-0000-000000000004', name: 'Dr. Verma', required: 20, max: 24 },
-      { id: '20000000-0000-0000-0000-000000000005', name: 'Dr. Iyer', required: 20, max: 24 },
-    ];
-
     const targets = input?.facultyId
-      ? facultyList.filter((f) => f.id === input.facultyId)
-      : facultyList;
+      ? activeFacultyList.filter((f) => f.id === input.facultyId)
+      : activeFacultyList;
 
     const rows: WorkloadRow[] = targets.map((fac) => {
-      // assigned_hours = count of timetable rows for that faculty (leave does not reduce it)
       const assigned = activeTimetable.filter((r) => r.facultyId === fac.id).length;
-      
-      // extra_hours = sum of span over confirmed extra lectures
-      const extraLectures = activeExtraLectures.filter((el) => el.faculty_id === fac.id && el.status === 'confirmed');
-      const extra = extraLectures.length; // 1 slot for theory
-
+      const extraLectures = activeExtraLectures.filter(
+        (el) => el.faculty_id === fac.id && el.status === 'confirmed'
+      );
+      const extra = extraLectures.length;
       const total = assigned + extra;
 
       let status: WorkloadRow['status'] = 'ok';
-      if (assigned < fac.required) {
+      if (assigned < fac.required_hours) {
         status = 'under';
-      } else if (total > fac.max) {
+      } else if (total > fac.max_hours) {
         status = 'over';
       }
 
       return {
         facultyId: fac.id,
         facultyName: fac.name,
-        requiredHours: fac.required,
+        requiredHours: fac.required_hours,
         assignedHours: assigned,
         extraHours: extra,
         totalHours: total,
-        maxHours: fac.max,
+        maxHours: fac.max_hours,
         status,
       };
     });
@@ -471,22 +425,13 @@ export const mockHandlers: {
   },
 
   getRoomAvailability: async (input) => {
-    const demoRoomsList: Array<{ id: string; name: string; type: 'classroom' | 'lab'; capacity: number }> = [
-      { id: '50000000-0000-0000-0000-000000000001', name: 'Room 101', type: 'classroom', capacity: 60 },
-      { id: '50000000-0000-0000-0000-000000000002', name: 'Room 102', type: 'classroom', capacity: 60 },
-      { id: '50000000-0000-0000-0000-000000000003', name: 'Room 103', type: 'classroom', capacity: 60 },
-      { id: '50000000-0000-0000-0000-000000000004', name: 'Room 104', type: 'classroom', capacity: 60 },
-      { id: '50000000-0000-0000-0000-000000000005', name: 'Lab 1', type: 'lab', capacity: 30 },
-      { id: '50000000-0000-0000-0000-000000000006', name: 'Lab 2', type: 'lab', capacity: 30 },
-    ];
-
     const d = new Date(input.date);
     const dayOfWeek = d.getUTCDay() === 0 ? 7 : d.getUTCDay();
-    const day = dayOfWeek >= 1 && dayOfWeek <= 5 ? dayOfWeek : 5;
+    const day = dayOfWeek >= 1 && dayOfWeek <= 5 ? dayOfWeek : 1;
 
     const timetableForDay = activeTimetable.filter((r) => r.day === day);
 
-    const rooms = demoRoomsList.map((rm) => {
+    const rooms = activeRoomsList.map((rm) => {
       const slots = TIME_SLOT_DEFS.map((slotDef) => {
         const slotId = `a0000000-0000-0000-0000-${String(slotDef.slotNo).padStart(12, '0')}`;
         const entry = timetableForDay.find((t) => t.roomId === rm.id && t.slotNo === slotDef.slotNo);
@@ -500,7 +445,6 @@ export const mockHandlers: {
           };
         }
 
-        // Check if there is an active open slot for this timetable row on this date
         const openSlot = activeOpenSlots.find((os) => os.timetable_id === entry.id && os.date === input.date);
         if (openSlot) {
           if (openSlot.status === 'open') {
@@ -511,7 +455,6 @@ export const mockHandlers: {
               who: `Open Academic Slot (${entry.className})`,
             };
           } else if (openSlot.status === 'booked') {
-            const extra = activeExtraLectures.find((el) => el.open_slot_id === openSlot.id);
             return {
               slotId,
               slotNo: slotDef.slotNo,
@@ -541,42 +484,17 @@ export const mockHandlers: {
   },
 
   getRecommendations: async (input) => {
-    // If openSlotId provided, find the open slot
     const slot = activeOpenSlots.find((s) => s.id === input.openSlotId);
-    
-    // Provide ranked candidates
-    const recs: Recommendation[] = [
-      {
-        facultyId: '20000000-0000-0000-0000-000000000002',
-        facultyName: 'Prof. Kaur',
-        score: 95,
-        reasons: [
-          'Assigned to class curriculum (Operating Systems)',
-          '100% free at requested period (No scheduling conflict)',
-          'Within statutory workload bounds (20 hrs / 24 max)',
-        ],
-      },
-      {
-        facultyId: '20000000-0000-0000-0000-000000000003',
-        facultyName: 'Dr. Mehta',
-        score: 82,
-        reasons: [
-          'Assigned to department curriculum (Computer Organization)',
-          'Free during period',
-          'Sufficient weekly workload balance',
-        ],
-      },
-      {
-        facultyId: '20000000-0000-0000-0000-000000000004',
-        facultyName: 'Dr. Verma',
-        score: 68,
-        reasons: [
-          'Department peer faculty',
-          'Free slot available',
-          'Acceptable substitution profile',
-        ],
-      },
-    ];
+    const recs: Recommendation[] = activeFacultyList.slice(0, 3).map((f, idx) => ({
+      facultyId: f.id,
+      facultyName: f.name,
+      score: 95 - idx * 10,
+      reasons: [
+        'Curriculum-aligned for course section',
+        'Available slot with no scheduling collision',
+        `Current workload (${activeTimetable.filter((r) => r.facultyId === f.id).length} hrs) conforms to maximum (${f.max_hours} hrs)`,
+      ],
+    }));
 
     return { ok: true, data: recs };
   },
@@ -599,27 +517,29 @@ export const mockHandlers: {
 
   upsertFaculty: async (input) => {
     const id = input.id || `20000000-0000-0000-0000-${String(activeFacultyList.length + 1).padStart(12, '0')}`;
-    const existing = activeFacultyList.find((f) => f.id === id);
-    const profile: FacultyView = {
+    const fac: FacultyProfile = {
       id,
-      user_id: input.user_id || existing?.user_id || `10000000-0000-0000-0000-${String(activeFacultyList.length + 1).padStart(12, '0')}`,
-      name: existing?.name || 'Faculty Member',
-      email: existing?.email || 'faculty@schednexa.edu',
+      user_id: input.user_id,
       department: input.department,
       required_hours: input.required_hours,
       max_hours: input.max_hours,
     };
+    const existing = activeFacultyList.find((f) => f.id === id);
     if (existing) {
-      Object.assign(existing, profile);
+      Object.assign(existing, fac);
     } else {
-      activeFacultyList.push(profile);
+      activeFacultyList.push({
+        ...fac,
+        name: 'Faculty Member',
+        email: `faculty${id.slice(-4)}@schednexa.edu`,
+      });
     }
-    return { ok: true, data: profile };
+    return { ok: true, data: fac };
   },
 
   upsertSubject: async (input) => {
     const id = input.id || `30000000-0000-0000-0000-${String(activeSubjectsList.length + 1).padStart(12, '0')}`;
-    const subject: Subject = {
+    const sub: Subject = {
       id,
       name: input.name,
       code: input.code,
@@ -630,11 +550,11 @@ export const mockHandlers: {
     };
     const existing = activeSubjectsList.find((s) => s.id === id);
     if (existing) {
-      Object.assign(existing, subject);
+      Object.assign(existing, sub);
     } else {
-      activeSubjectsList.push(subject);
+      activeSubjectsList.push(sub);
     }
-    return { ok: true, data: subject };
+    return { ok: true, data: sub };
   },
 
   upsertClass: async (input) => {
@@ -679,7 +599,6 @@ export const mockHandlers: {
       return { ok: false, error: 'Timetable entry not found' };
     }
 
-    // Determine target slot number
     const slotDef = TIME_SLOT_DEFS.find(
       (ts) => `a0000000-0000-0000-0000-${String(ts.slotNo).padStart(12, '0')}` === input.slotId
     );
@@ -688,7 +607,6 @@ export const mockHandlers: {
 
     const conflicts: string[] = [];
 
-    // Check Room Collision
     const roomConflict = activeTimetable.find(
       (e) =>
         e.id !== input.timetableId &&
@@ -702,7 +620,6 @@ export const mockHandlers: {
       );
     }
 
-    // Check Faculty Collision
     const facultyConflict = activeTimetable.find(
       (e) =>
         e.id !== input.timetableId &&
@@ -716,7 +633,6 @@ export const mockHandlers: {
       );
     }
 
-    // Check Class Collision
     const classConflict = activeTimetable.find(
       (e) =>
         e.id !== input.timetableId &&
@@ -734,7 +650,6 @@ export const mockHandlers: {
       return { ok: true, data: { ok: false, conflicts } };
     }
 
-    // Apply move
     entry.day = input.day;
     entry.slotNo = targetSlotNo;
     entry.slotId = input.slotId;
@@ -761,12 +676,11 @@ export const mockHandlers: {
     };
     activeLabBookings.unshift(booking);
 
-    // Also push a notification
     activeNotifications.unshift({
       id: `notif-0000-0000-0000-${String(activeNotifications.length + 1).padStart(12, '0')}`,
       user_id: input.facultyId,
       title: 'Lab Booking Approved',
-      message: `Your booking for ${input.roomId.includes('6') ? 'Lab 2' : 'Lab 1'} on ${input.date} has been confirmed.`,
+      message: `Your booking for laboratory facilities on ${input.date} has been confirmed.`,
       type: 'lab_booking',
       related_id: booking.id,
       read: false,
@@ -801,16 +715,22 @@ export const mockHandlers: {
 
   getDashboardStats: async () => {
     const stats: DashboardStats = {
-      lectures: 100,
+      lectures: activeTimetable.length,
       conflicts: 0,
-      roomUtilizationPct: 82,
-      openSlotsFilled: 4,
-      hoursSaved: 4,
+      roomUtilizationPct: 84,
+      openSlotsFilled: activeExtraLectures.length,
+      hoursSaved: activeExtraLectures.length * 2,
     };
     return { ok: true, data: stats };
   },
 
   getAnalytics: async () => {
-    return { ok: true, data: {} };
+    const data: AnalyticsData = {
+      lectures: activeTimetable,
+      classes: activeClassesList,
+      faculty: activeFacultyList,
+      rooms: activeRoomsList,
+    };
+    return { ok: true, data };
   },
 };

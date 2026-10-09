@@ -1,0 +1,99 @@
+﻿section,program,semester,subject_code,subject_name,faculty_codes,faculty_names
+3rd Semester CS-1,B.Tech CSE,3rd,AGCS–25301,Probability and Statistics,AS-SK,Shama Kundra
+3rd Semester CS-1,B.Tech CSE,3rd,AGCS–25307,Data Structures Lab,CS-GV ; CS-GK,Gaurav ; Goutam Kumar
+3rd Semester CS-1,B.Tech CSE,3rd,AGCS–25302,Object Oriented Programming using C++,CS-AJS,Ajay Sharma
+3rd Semester CS-1,B.Tech CSE,3rd,AGCS–25308,AI Tools and Applications Lab,CS-GK ; CS-PK,Goutam Kumar ; Parambir Kaur
+3rd Semester CS-1,B.Tech CSE,3rd,AGCS–25303,Data Structures,CS-GV,Gaurav
+3rd Semester CS-1,B.Tech CSE,3rd,AGCS–25309,Problem Solving using Python Lab,CS-PK ; CS-AJS,Parambir Kaur ; Ajay Sharma
+3rd Semester CS-1,B.Tech CSE,3rd,AGCS–25304,Computer Organization and Architecture (NPTEL),CS-AJS,Ajay Sharma
+3rd Semester CS-1,B.Tech CSE,3rd,AGMC-25001,Indian Constitution,IQAC-PK,Pardeep Kaur
+3rd Semester CS-1,B.Tech CSE,3rd,AGCS–25305,Emerging Trends in Computer Science,CS-PK,Parambir Kaur
+3rd Semester CS-1,B.Tech CSE,3rd,AGCS–25306,Object Oriented Programming using C++ Lab,CS-AJS ; CS-GV,Ajay Sharma ; Gaurav
+3rd Semester CS-2,B.Tech CSE,3rd,AGCS–25301,Probability and Statistics,AS-SK,Shama Kundra
+3rd Semester CS-2,B.Tech CSE,3rd,AGCS–25307,Data Structures Lab,CS-VD ; CS-PK,Veenum Devi ; Parambir Kaur
+3rd Semester CS-2,B.Tech CSE,3rd,AGCS–25302,Object Oriented Programming using C++,CS-PK,Parambir Kaur
+3rd Semester CS-2,B.Tech CSE,3rd,AGCS–25308,AI Tools and Applications Lab,CS-AJS ; CS-JS,Ajay Sharma ; Jaspreet Singh
+3rd Semester CS-2,B.Tech CSE,3rd,AGCS–25303,Data Structures,CS-VD,Veenum Devi
+3rd Semester CS-2,B.Tech CSE,3rd,AGCS–25309,Problem Solving using Python Lab,CS-KS ; CS-PK,Khushi Sood ; Parambir Kaur
+3rd Semester CS-2,B.Tech CSE,3rd,AGCS–25304,Computer Organization and Architecture (NPTEL),CS-SA,Shagun Arora
+3rd Semester CS-2,B.Tech CSE,3rd,AGMC-25001,Indian Constitution,IQAC-PK,Pardeep Kaur
+3rd Semester CS-2,B.Tech CSE,3rd,AGCS–25305,Emerging Trends in Computer Science,CS-BK,Bhuvnesh Kumar
+3rd Semester CS-2,B.Tech CSE,3rd,AGCS–25306,Object Oriented Programming using C++ Lab,CS-PK ; CS-VD,Parambir Kaur ; Veenum Devi
+3rd Semester CoE,B.Tech CoE,3rd,AGCS–25301,Probability and Statistics,AS-RT,Retneer Sharma
+3rd Semester CoE,B.Tech CoE,3rd,AGCS–25307,Data Structures Lab,CS-GKG ; CS-KS,Gagandeep Kaur Gill ; Khushi Sood
+3rd Semester CoE,B.Tech CoE,3rd,AGCS–25302,Object Oriented Programming using C++,CS-SK,Shagun Arora
+3rd Semester CoE,B.Tech CoE,3rd,AGCS–25308,AI Tools and Applications Lab,CS-SJ ; CS-GK,Shweta Joshi ; Goutam Kumar
+3rd Semester CoE,B.Tech CoE,3rd,AGCS–25303,Data Structures,CS-GKG,Gagandeep Kaur Gill
+3rd Semester CoE,B.Tech CoE,3rd,AGCS–25309,Problem Solving using Python Lab,CS-GS ; CS-SK,Gaurav Sharma ; Shagun Arora
+3rd Semester CoE,B.Tech CoE,3rd,AGCS–25304,Computer Organization and Architecture (NPTEL),CS-GKG,Gagandeep Kaur Gill
+3rd Semester CoE,B.Tech CoE,3rd,AGMC-25001,Indian Constitution,IQAC-PK,Pardeep Kaur
+3rd Semester CoE,B.Tech CoE,3rd,AGCS–25305,Emerging Trends in Computer Science,CS-RPS,Ramanpreet Singh
+3rd Semester CoE,B.Tech CoE,3rd,AGCS–25306,Object Oriented Programming using C++ Lab,CS-SK ; CS-GS,Shagun Arora ; Gaurav Sharma
+5th Semester CS-1,B.Tech CSE,5th,AGCS - 21501,Design and Analysis of Algorithms,CS-RPS,Ramanpreet Singh
+5th Semester CS-1,B.Tech CSE,5th,AGCS - 21507,Software Engineering Lab,CS-SJK,Sanjeev Kumar
+5th Semester CS-1,B.Tech CSE,5th,AGCS - 21502,Software Engineering (NPTEL),CS-SJK,Sanjeev Kumar
+5th Semester CS-1,B.Tech CSE,5th,AGCS - 21508,Programming in Java Lab,CS-GV,Gaurav
+5th Semester CS-1,B.Tech CSE,5th,AGCS - 21503,Programming in Java,CS-GV,Gaurav
+5th Semester CS-1,B.Tech CSE,5th,AGCS - 21509,Artificial Intelligence Lab,CS-VD,Veenum Devi
+5th Semester CS-1,B.Tech CSE,5th,AGCS - 21504A,Professional Elective Course-1 (PEC-1) TOC (NPTEL),CS-GV,Gaurav
+5th Semester CS-1,B.Tech CSE,5th,AGAP - 21502,Engineering Aptitude - II,AS-SK,Shama Kundra
+5th Semester CS-1,B.Tech CSE,5th,AGCS - 21505,Artificial Intelligence,CS-VD,Veenum Devi
+5th Semester CS-1,B.Tech CSE,5th,AGCS-21510,Summer Training,CS-SA,Shagun Arora
+5th Semester CS-1,B.Tech CSE,5th,AGCS - 21506,Design and Analysis of Algorithms Lab,CS-RPS,Ramanpreet Singh
+5th Semester CS-2,B.Tech CSE,5th,AGCS - 21501,Design and Analysis of Algorithms,CS-TJS,Tejinder Sharma
+5th Semester CS-2,B.Tech CSE,5th,AGCS - 21507,Software Engineering Lab,CS-RPS,Ramanpreet Singh
+5th Semester CS-2,B.Tech CSE,5th,AGCS - 21502,Software Engineering (NPTEL),CS-VD,Veenum Devi
+5th Semester CS-2,B.Tech CSE,5th,AGCS - 21508,Programming in Java Lab,CS-JS,Jaspreet Singh
+5th Semester CS-2,B.Tech CSE,5th,AGCS - 21503,Programming in Java,CS-JS,Jaspreet Singh
+5th Semester CS-2,B.Tech CSE,5th,AGCS - 21509,Artificial Intelligence Lab,CS-SJK,Sanjeev Kumar
+5th Semester CS-2,B.Tech CSE,5th,AGCS - 21504A,Professional Elective Course-1 (PEC-1) TOC (NPTEL),CS-PS,Pavitar Singh
+5th Semester CS-2,B.Tech CSE,5th,AGAP - 21502,Engineering Aptitude - II,AS-JK,Jatinder Kaur
+5th Semester CS-2,B.Tech CSE,5th,AGCS - 21505,Artificial Intelligence,CS-SJK,Sanjeev Kumar
+5th Semester CS-2,B.Tech CSE,5th,AGCS-21510,Summer Training,CS-GKG,Gagandeep Kaur Gill
+5th Semester CS-2,B.Tech CSE,5th,AGCS - 21506,Design and Analysis of Algorithms Lab,CS-TJS,Tejinder Sharma
+5th Semester CS-3,B.Tech CSE,5th,AGCS - 21501,Design and Analysis of Algorithms,CS-SA,Shagun Arora
+5th Semester CS-3,B.Tech CSE,5th,AGCS - 21507,Software Engineering Lab,CS-SJ,Shweta Joshi
+5th Semester CS-3,B.Tech CSE,5th,AGCS - 21502,Software Engineering (NPTEL),CS-GK,Goutam Kumar
+5th Semester CS-3,B.Tech CSE,5th,AGCS - 21508,Programming in Java Lab,CS-GK,Goutam Kumar
+5th Semester CS-3,B.Tech CSE,5th,AGCS - 21503,Programming in Java,CS-GK,Goutam Kumar
+5th Semester CS-3,B.Tech CSE,5th,AGCS - 21509,Artificial Intelligence Lab,CS-GKG,Gagandeep Kaur Gill
+5th Semester CS-3,B.Tech CSE,5th,AGCS - 21504A,Professional Elective Course-1 (PEC-1) TOC (NPTEL),CS-CS,Chaitali Sood
+5th Semester CS-3,B.Tech CSE,5th,AGAP - 21502,Engineering Aptitude - II,AS-SK,Shama Kundra
+5th Semester CS-3,B.Tech CSE,5th,AGCS - 21505,Artificial Intelligence,CS-GKG,Gagandeep Kaur Gill
+5th Semester CS-3,B.Tech CSE,5th,AGCS-21510,Summer Training,CS-CS,Chaitali Sood
+5th Semester CS-3,B.Tech CSE,5th,AGCS - 21506,Design and Analysis of Algorithms Lab,CS-SA,Shagun Arora
+5th Semester CoE,B.Tech CoE,5th,AGCS - 21501,Design and Analysis of Algorithms,CS-SJ,Shweta Joshi
+5th Semester CoE,B.Tech CoE,5th,AGCS - 21507,Software Engineering Lab,CS-SJK,Sanjeev Kumar
+5th Semester CoE,B.Tech CoE,5th,AGCS - 21502,Software Engineering (NPTEL),CS-SJK,Sanjeev Kumar
+5th Semester CoE,B.Tech CoE,5th,AGCS - 21508,Programming in Java Lab,CS-GK,Goutam Kumar
+5th Semester CoE,B.Tech CoE,5th,AGCS - 21503,Programming in Java,CS-HOD,Sandeep Kad
+5th Semester CoE,B.Tech CoE,5th,AGCS - 21509,Artificial Intelligence Lab,CS-JS,Jaspreet Singh
+5th Semester CoE,B.Tech CoE,5th,AGCoE - 21504A,Professional Elective Course-1 (PEC-1) TOC (NPTEL),CS-SJ,Shweta Joshi
+5th Semester CoE,B.Tech CoE,5th,AGAP - 21502,Engineering Aptitude - II,AS-JK,Jatinder Kaur
+5th Semester CoE,B.Tech CoE,5th,AGCS - 21505,Artificial Intelligence,CS-JS,Jaspreet Singh
+5th Semester CoE,B.Tech CoE,5th,AGCS-21510,Summer Training,CS-BK,Bhuvnesh Kumar
+5th Semester CoE,B.Tech CoE,5th,AGCS - 21506,Design and Analysis of Algorithms Lab,CS-SJ,Shweta Joshi
+7th Semester CS-3,B.Tech CSE,7th,AGCS - 21701,Data Science,CS-GS,Gaurav Sharma
+7th Semester CS-3,B.Tech CSE,7th,AGOE - 21709,Management of Human Resources,MS-AR,Archana Kumari
+7th Semester CS-3,B.Tech CSE,7th,AGCS – 21702X | A/B/C,Professional Elective Course-3 (PEC-3) ST/DL/CV,CS-JS,Jaspreet Singh
+7th Semester CS-3,B.Tech CSE,7th,AGCS - 21703,Data Science Lab,CS-GS,Gaurav Sharma
+7th Semester CS-3,B.Tech CSE,7th,AGCS – 21702Y | F/G/H,Professional Elective Course-4 (PEC-4) | IOT/SNA/RL,CS-TJS,Tejinder Sharma
+7th Semester CS-3,B.Tech CSE,7th,AGCS - 21704,Major Project Lab,,G1: CS-TJS Tejinder Sharma ; G2: CS-BK Bhuvnesh Kumar
+7th Semester CoE,B.Tech CoE,7th,AGCS - 21701,Data Science,CS-BK,Bhuvnesh Kumar
+7th Semester CoE,B.Tech CoE,7th,AGOE - 21709,Management of Human Resources,MS-NK,Namrita Kalia
+7th Semester CoE,B.Tech CoE,7th,AGCS – 21702X | A/B/C,Professional Elective Course-3 (PEC-3) ST/DL/CV,CS-BK,Bhuvnesh Kumar
+7th Semester CoE,B.Tech CoE,7th,AGCS - 21703,Data Science Lab,CS-BK,Bhuvnesh Kumar
+7th Semester CoE,B.Tech CoE,7th,AGCS – 21702Y | F/G/H,Professional Elective Course-4 (PEC-4) | IOT/SNA/RL,CS-RPS,Ramanpreet Singh
+7th Semester CoE,B.Tech CoE,7th,AGCS - 21704,Major Project Lab,,G1: CS-AJS Ajay Sharma ; G2: CS-PS Pavitar Singh
+M.Tech CSE 1st Semester,M.Tech CSE,M.Tech 1st,MTCS 101-18,Mathematical foundations of Computer Science (MFOCS),,AS-RS: Mr. Retneer Sharma
+M.Tech CSE 1st Semester,M.Tech CSE,M.Tech 1st,MTCS 104-18,Machine Learning,,CS-SJK: Er. Sanjeev Kumar
+M.Tech CSE 1st Semester,M.Tech CSE,M.Tech 1st,MTOE 102-18,Advanced Data Structures (ADS),,CS-TS: Er. Tejinder Sharma
+M.Tech CSE 1st Semester,M.Tech CSE,M.Tech 1st,MTCS 108-18,Data Science (DSc),,CS-BK: Er. Bhuvnesh Kumar
+M.Tech CSE 1st Semester,M.Tech CSE,M.Tech 1st,MTCS 103-18,Advanced Data Structures Lab,,CS-TS: Er. Tejinder Sharma
+M.Tech CSE 1st Semester,M.Tech CSE,M.Tech 1st,MTRM 101-18,Research Methodology and IPR (RMIPR),,MS-HDS: Dr. Hardeep Singh
+M.Tech CSE 1st Semester,M.Tech CSE,M.Tech 1st,MTCS 105-18,Machine Learning (ML),,CS-SJK: Er. Sanjeev Kumar
+M.Tech CSE 1st Semester,M.Tech CSE,M.Tech 1st,MTA-04,Audit Course,,CS-PS: Er. Pavitar Singh
+M.Tech CSE 3rd Semester,M.Tech CSE,M.Tech 3rd,MTOE 301-18,Business Analytics,,CS-AJS: Er. Ajay Sharma
+M.Tech CSE 3rd Semester,M.Tech CSE,M.Tech 3rd,MTCS 304-18,Optimization Techniques,,CS-PS: Er. Pavitar Singh
+M.Tech CSE 3rd Semester,M.Tech CSE,M.Tech 3rd,MTCS 305-18,Training,,CS-BK: Er. Bhuvnesh Kumar
+M.Tech CSE 3rd Semester,M.Tech CSE,M.Tech 3rd,MTCS 301-18,Dissertation-I,,CS-TJS: Er. Tejinder Sharma
