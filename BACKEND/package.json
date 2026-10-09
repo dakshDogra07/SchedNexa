@@ -11,7 +11,9 @@
     "timetable-test": "tsx scripts/timetable-test.ts",
     "leave-test": "tsx scripts/leave-test.ts",
     "slots-test": "tsx scripts/slots-test.ts",
-    "notifications-test": "tsx scripts/notifications-test.ts"
+    "notifications-test": "tsx scripts/notifications-test.ts",
+    "demo-test": "tsx scripts/demo-test.ts",
+    "workload-test": "tsx scripts/workload-test.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.0",

@@ -77,4 +77,17 @@ export const MarkNotificationReadInput = z
   })
   .strict();
 
+// ─── Demo services schemas ──────────────────────────────────────────
+export const GetDemoUsersInput = z.object({}).strict();
+export const ResetDemoInput = z.object({}).strict();
+
+// ─── Workload services schemas ──────────────────────────────────────
+export const GetWorkloadInput = z
+  .object({
+    facultyId: z.string().optional(),
+  })
+  .strict();
+
+
+
 

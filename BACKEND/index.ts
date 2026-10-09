@@ -30,6 +30,7 @@ async function ping(
   }
 }
 
+import { getDemoUsers, resetDemo } from './services/demo.js';
 import { getLeaveImpact, markLeave } from './services/leave.js';
 import {
   getNotifications,
@@ -41,12 +42,14 @@ import {
   getEffectiveSchedule,
   getTimetable,
 } from './services/timetable.js';
+import { getWorkload } from './services/workload.js';
 
 // ─── Handlers registry ──────────────────────────────────────────────
 export const handlers: Handlers = {
   ping,
-  getDemoUsers: () => notImplemented(),
-  resetDemo: () => notImplemented(),
+  getDemoUsers,
+  resetDemo,
+
   generateTimetable,
   getTimetable,
   getEffectiveSchedule,
@@ -58,7 +61,8 @@ export const handlers: Handlers = {
   getNotifications,
   markNotificationRead,
 
-  getWorkload: () => notImplemented(),
+  getWorkload,
+
   getRoomAvailability: () => notImplemented(),
   getRecommendations: () => notImplemented(),
   listFaculty: () => notImplemented(),

@@ -1,41 +1,42 @@
-# B-08 Plan
+# B-10 Plan
 
 ## Task
-B-08 | P0 | services/notifications: getNotifications, markNotificationRead | needs: B-02
+B-10 | P1 | engine/workload.ts + getWorkload | needs: B-02
 
 ## Goal
-Implement notification services in `BACKEND/services/notifications.ts`:
-1. `getNotifications`: Fetch all notifications for a given `userId`, ordered newest first (`created_at` DESC). Validate user existence in `users` table.
-2. `markNotificationRead`: Update `notifications` table set `read = true` for a given `notificationId`.
+Implement workload engine and service:
+1. `BACKEND/engine/workload.ts`: Pure function `calculateWorkloadRow` and `computeWorkloadStatus`.
+   - assigned_hours = count of timetable rows for faculty.
+   - extra_hours = sum of span of confirmed extra lectures that week.
+   - total_hours = assigned_hours + extra_hours.
+   - status: 'under' if assigned_hours < required_hours; 'ok' if between required and max; 'over' if total_hours > max_hours.
+2. `BACKEND/services/workload.ts`: `getWorkload` service to query faculty, compute workload rows, and return `WorkloadRow[]`.
 
 ## Sub-steps
-1. [x] Add Zod schemas `GetNotificationsInput` and `MarkNotificationReadInput` to `BACKEND/schemas.ts`.
-2. [x] Create `BACKEND/services/notifications.ts` with `getNotifications` and `markNotificationRead`.
-3. [x] Wire handlers in `BACKEND/index.ts` replacing `notImplemented()` stubs.
-4. [x] Create verification script `BACKEND/scripts/notifications-test.ts`.
-5. [x] Add `"notifications-test": "tsx scripts/notifications-test.ts"` to `BACKEND/package.json`.
-6. [x] Run `npm run typecheck` — 0 errors.
-7. [x] Run `npm run notifications-test` — 0 errors.
+1. [x] Add Zod schema `GetWorkloadInput` to `BACKEND/schemas.ts`.
+2. [x] Create `BACKEND/engine/workload.ts` with pure calculation functions.
+3. [x] Create `BACKEND/services/workload.ts` with `getWorkload`.
+4. [x] Wire `getWorkload` in `BACKEND/index.ts` handlers registry.
+5. [x] Create verification script `BACKEND/scripts/workload-test.ts`.
+6. [x] Add `"workload-test": "tsx scripts/workload-test.ts"` to `BACKEND/package.json`.
+7. [x] Run `npm run typecheck` — 0 errors.
+8. [x] Run `npm run workload-test` — 0 errors.
 
 ## Key Business Rules Implemented
-- `getNotifications`:
-  - Input: `{ userId: string }`
-  - Validates `userId` with Zod. Checks if user exists in `users` table. Returns `{ ok: false, error: 'User not found' }` if missing.
-  - Queries `notifications` table where `user_id = userId`, ordered by `created_at` DESC.
-  - Returns `Notification[]`.
-- `markNotificationRead`:
-  - Input: `{ notificationId: string }`
-  - Validates `notificationId` with Zod. Checks if notification exists in `notifications` table. Returns `{ ok: false, error: 'Notification not found' }` if missing.
-  - Updates `notifications` set `read = true` where `id = notificationId`.
-  - Returns `{ done: true }`.
+- `getWorkload`:
+  - Input: `{ facultyId?: string }`
+  - Output: `WorkloadRow[]`
+  - Validates `facultyId` if provided. Returns error if faculty profile does not exist.
+  - Returns required, assigned, extra, total, max, and status ('under' | 'ok' | 'over').
 
 ## Files Created/Modified
-- `BACKEND/schemas.ts` (updated: added GetNotificationsInput, MarkNotificationReadInput)
-- `BACKEND/services/notifications.ts` (created: getNotifications, markNotificationRead)
-- `BACKEND/index.ts` (updated: imported and registered notification handlers)
-- `BACKEND/scripts/notifications-test.ts` (created)
-- `BACKEND/package.json` (updated: added notifications-test npm script)
+- `BACKEND/schemas.ts` (updated: added GetWorkloadInput)
+- `BACKEND/engine/workload.ts` (created)
+- `BACKEND/services/workload.ts` (created)
+- `BACKEND/index.ts` (updated: wired getWorkload)
+- `BACKEND/scripts/workload-test.ts` (created)
+- `BACKEND/package.json` (updated: added workload-test script)
 
 ## Verification Results
 - `npm run typecheck` → Exit code 0, 0 errors
-- `npm run notifications-test` → Exit code 0, all tests passed
+- `npm run workload-test` → Exit code 0, all calculations and service validation verified
